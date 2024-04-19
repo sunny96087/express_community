@@ -8,8 +8,8 @@ const userSchema = new mongoose.Schema(
         required: [true, '使用者名稱未填寫'] // 設定必填 true, 後面帶上錯誤訊息
       },
       gender: {
-        type: String,
-        enum: ['男', '女', '秘密'], // 限制性別選項
+        type: Number,
+        enum: [1, 2, 3], // 限制性別選項 (1:male, 2:female, 3:other)
         default: null
       },
       email: {
