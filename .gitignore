@@ -1,0 +1,8 @@
+// 不要上傳套件包
+node_modules/
+
+// 不要上傳 config.env
+config.env
+
+// 不要上傳所有 .env
+*.env
