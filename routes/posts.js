@@ -68,7 +68,6 @@ router.delete('/:id', async (req, res) => {
         // 檢查 ID 格式及是否存在
         const isIdExist = await tools.findModelById(Post, id, res);
         if (!isIdExist) {
-            // 如果 isIdExist 為 null，則已經處理過錯誤，直接返回
             return;
         }
 
@@ -132,6 +131,33 @@ router.patch('/:id', async (req, res) => {
             handleSuccess(res, updatedPost, '更新單筆資料成功');
         } else {
             handleError(res);
+        }
+    } catch (err) {
+        handleError(res, err.message);
+    }
+});
+
+router.patch('/like/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        // 檢查 ID 格式及是否存在
+        const isIdExist = await tools.findModelById(Post, id, res);
+        if (!isIdExist) {
+            return;
+        }
+
+        // 使用 findByIdAndUpdate 方法來增加 likes 的值
+        const updatedPost = await Post.findByIdAndUpdate(
+            id,
+            { $inc: { likes: 1 } }, // 使用 $inc 操作符來增加 likes 的值
+            { new: true } // 返回更新後的文章
+        );
+
+        if (updatedPost) {
+            handleSuccess(res, updatedPost, '按讚成功');
+        } else {
+            handleError(res, '按讚失敗');
         }
     } catch (err) {
         handleError(res, err.message);

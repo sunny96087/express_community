@@ -17,13 +17,18 @@ const postSchema = new mongoose.Schema(
         select: false  // 搜尋時不顯示
       },
       name: {
-          type: String,
-          required: [true, '貼文姓名未填寫']
+        type: String,
+        required: [true, '貼文姓名未填寫']
       },
       likes: {
-          type:Number,
-          default:0
-        }
+        type:Number,
+        default:0
+      },
+      userId: {
+        type:String,
+        default:""
+        // required: [true, '未登入']
+      }
     },
     {
       versionKey: false // 禁用 __v 欄位

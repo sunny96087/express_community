@@ -19,7 +19,8 @@ const userSchema = new mongoose.Schema(
       },
       password: {
         type: String,
-        required: [true, '密碼未填寫']
+        required: [true, '密碼未填寫'],
+        select: false 
       },
       birthday: {
         type: Date,
