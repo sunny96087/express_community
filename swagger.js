@@ -6,7 +6,7 @@ const doc = {
         title: "社群平台 API",
         description: "六角課程主線任務練習用 api"
     },
-    host: "https://express-community.onrender.com/",
+    host: "https://express-community.onrender.com",
     tags: [ // by default: empty Array
       {
         name: "Index",

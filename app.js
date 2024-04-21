@@ -51,7 +51,7 @@ var indexRouter = require('./routes/index');
 var app = express();
 app.use(cors());
 
-app.use('/api-doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
+app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 // 設定視圖引擎，並指定視圖文件的位置
 app.set('views', path.join(__dirname, 'views'));
