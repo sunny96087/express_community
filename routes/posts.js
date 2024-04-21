@@ -7,7 +7,8 @@ const handleError = require('../utils/handleError');
 const handleSuccess = require('../utils/handleSuccess');
 const Post = require('../models/post');
 
-router.get('', async (req, res) => {
+router.get('/', async (req, res) => {
+    // #swagger.tags = ['Posts']
     try {
         const post = await Post.find();
         handleSuccess(res, post, '取得所有資料成功');
@@ -16,7 +17,8 @@ router.get('', async (req, res) => {
     }
 });
 
-router.post('', async (req, res) => {
+router.post('/', async (req, res) => {
+    // #swagger.tags = ['Posts']
     try {
         const data = req.body;
         if (data) {
@@ -52,7 +54,8 @@ router.post('', async (req, res) => {
     }
 });
 
-router.delete('', async (req, res) => {
+router.delete('/', async (req, res) => {
+    // #swagger.tags = ['Posts']
     try {
         const data = await Post.deleteMany({});
         handleSuccess(res, [], '刪除全部資料成功');
@@ -62,6 +65,7 @@ router.delete('', async (req, res) => {
 });
 
 router.delete('/:id', async (req, res) => {
+    // #swagger.tags = ['Posts']
     try {
         const id = req.params.id;
 
@@ -79,6 +83,7 @@ router.delete('/:id', async (req, res) => {
 });
 
 router.patch('/:id', async (req, res) => {
+    // #swagger.tags = ['Posts']
     try {
         const id = req.params.id;
         let data = req.body;
@@ -138,6 +143,7 @@ router.patch('/:id', async (req, res) => {
 });
 
 router.patch('/like/:id', async (req, res) => {
+    // #swagger.tags = ['Posts']
     try {
         const id = req.params.id;
 
