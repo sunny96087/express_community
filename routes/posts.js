@@ -9,6 +9,7 @@ const Post = require('../models/post');
 
 router.get('/', async (req, res) => {
     // #swagger.tags = ['Posts']
+    // #swagger.description = '取得所有文章'
     try {
         const post = await Post.find();
         handleSuccess(res, post, '取得所有資料成功');
@@ -19,6 +20,7 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
     // #swagger.tags = ['Posts']
+    // #swagger.description = '新增一篇文章'
     try {
         const data = req.body;
         if (data) {
@@ -56,6 +58,7 @@ router.post('/', async (req, res) => {
 
 router.delete('/', async (req, res) => {
     // #swagger.tags = ['Posts']
+    // #swagger.description = '刪除全部的文章'
     try {
         const data = await Post.deleteMany({});
         handleSuccess(res, [], '刪除全部資料成功');
@@ -66,6 +69,7 @@ router.delete('/', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     // #swagger.tags = ['Posts']
+    // #swagger.description = '刪除指定 ID 的文章'
     try {
         const id = req.params.id;
 
@@ -84,6 +88,7 @@ router.delete('/:id', async (req, res) => {
 
 router.patch('/:id', async (req, res) => {
     // #swagger.tags = ['Posts']
+    // #swagger.description = '修改指定 ID 的文章'
     try {
         const id = req.params.id;
         let data = req.body;
@@ -144,6 +149,7 @@ router.patch('/:id', async (req, res) => {
 
 router.patch('/like/:id', async (req, res) => {
     // #swagger.tags = ['Posts']
+    // #swagger.description = '新增指定 ID 的文章按讚 +1'
     try {
         const id = req.params.id;
 

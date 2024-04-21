@@ -10,6 +10,7 @@ const User = require("../models/user"); // 引入 Post 模型
 // 定義 GET 請求的路由，用於獲取所有資料
 router.get("/", async (req, res) => {
   // #swagger.tags = ['Users']
+  // #swagger.description = '取得所有使用者'
   try {
     const user = await User.find(); // 查詢所有資料
     handleSuccess(res, user, "取得所有資料成功"); // 如果成功，回應成功信息和資料
@@ -21,6 +22,7 @@ router.get("/", async (req, res) => {
 // 獲取特定使用者
 router.get("/:id", async (req, res) => {
   // #swagger.tags = ['Users']
+  // #swagger.description = '取得指定 ID 使用者'
   try {
     const user = await User.findById(req.params.id);
     if (user) {
@@ -36,6 +38,7 @@ router.get("/:id", async (req, res) => {
 // 定義 POST 請求的路由，用於新增單筆資料
 router.post("/", async (req, res) => {
   // #swagger.tags = ['Users']
+  // #swagger.description = '新增一位使用者'
   try {
     let data = req.body; // 獲取請求體中的數據
     data = tools.trimObjectAllValues(data);
@@ -76,6 +79,7 @@ router.post("/", async (req, res) => {
 // 定義 DELETE 請求的路由，用於刪除全部資料
 router.delete("/", async (req, res) => {
   // #swagger.tags = ['Users']
+  // #swagger.description = '刪除所有使用者'
   try {
     const data = await User.deleteMany({}); // 刪除全部資料
     handleSuccess(res, [], "刪除全部資料成功"); // 如果成功，回應成功信息
@@ -87,6 +91,7 @@ router.delete("/", async (req, res) => {
 // 定義 DELETE 請求的路由，用於刪除單筆資料
 router.delete("/:id", async (req, res) => {
   // #swagger.tags = ['Users']
+  // #swagger.description = '刪除指定 ID 使用者'
   try {
     const id = req.params.id; // 獲取路由參數中的 ID
 
@@ -106,6 +111,7 @@ router.delete("/:id", async (req, res) => {
 // 定義 PATCH 請求的路由，用於更新單筆資料
 router.patch("/:id", async (req, res) => {
   // #swagger.tags = ['Users']
+  // #swagger.description = '修改指定 ID 使用者'
   try {
     const id = req.params.id; // 獲取路由參數中的 ID
     let data = req.body; // 獲取請求體中的數據

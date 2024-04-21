@@ -30,7 +30,7 @@
         "tags": [
           "Index"
         ],
-        "description": "",
+        "description": "express 預設首頁，目前沒用",
         "responses": {
           "default": {
             "description": ""
@@ -43,7 +43,7 @@
         "tags": [
           "Users"
         ],
-        "description": "",
+        "description": "取得所有使用者",
         "responses": {
           "default": {
             "description": ""
@@ -54,7 +54,7 @@
         "tags": [
           "Users"
         ],
-        "description": "",
+        "description": "新增一位使用者",
         "parameters": [
           {
             "name": "body",
@@ -85,7 +85,7 @@
         "tags": [
           "Users"
         ],
-        "description": "",
+        "description": "刪除所有使用者",
         "responses": {
           "default": {
             "description": ""
@@ -98,7 +98,7 @@
         "tags": [
           "Users"
         ],
-        "description": "",
+        "description": "取得指定 ID 使用者",
         "parameters": [
           {
             "name": "id",
@@ -117,7 +117,7 @@
         "tags": [
           "Users"
         ],
-        "description": "",
+        "description": "刪除指定 ID 使用者",
         "parameters": [
           {
             "name": "id",
@@ -136,7 +136,7 @@
         "tags": [
           "Users"
         ],
-        "description": "",
+        "description": "修改指定 ID 使用者",
         "parameters": [
           {
             "name": "id",
@@ -181,7 +181,7 @@
         "tags": [
           "Posts"
         ],
-        "description": "",
+        "description": "取得所有文章",
         "responses": {
           "default": {
             "description": ""
@@ -192,7 +192,7 @@
         "tags": [
           "Posts"
         ],
-        "description": "",
+        "description": "新增一篇文章",
         "parameters": [
           {
             "name": "body",
@@ -226,7 +226,7 @@
         "tags": [
           "Posts"
         ],
-        "description": "",
+        "description": "刪除全部的文章",
         "responses": {
           "default": {
             "description": ""
@@ -239,7 +239,7 @@
         "tags": [
           "Posts"
         ],
-        "description": "",
+        "description": "刪除指定 ID 的文章",
         "parameters": [
           {
             "name": "id",
@@ -258,7 +258,7 @@
         "tags": [
           "Posts"
         ],
-        "description": "",
+        "description": "修改指定 ID 的文章",
         "parameters": [
           {
             "name": "id",
@@ -300,7 +300,7 @@
         "tags": [
           "Posts"
         ],
-        "description": "",
+        "description": "新增指定 ID 的文章按讚 +1",
         "parameters": [
           {
             "name": "id",
