@@ -7,6 +7,7 @@ const doc = {
         description: "六角課程主線任務練習用 api"
     },
     host: "https://express-community.onrender.com",
+    basePath: "/v1",
     tags: [ // by default: empty Array
       {
         name: "Index",
