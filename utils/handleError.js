@@ -1,11 +1,7 @@
 // const headers = require('./headers');
-const cors = require('cors');
-
-// 允許所有的源
-app.use(cors());
 
 const handleError = (res, message) => {
-    res.writeHead(400,headers);
+    res.writeHead(400);
     res.write(JSON.stringify({
       "status": "false",
       "message": message || "sorry, server error..."
