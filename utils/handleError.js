@@ -1,4 +1,8 @@
-const headers = require('./headers');
+// const headers = require('./headers');
+const cors = require('cors');
+
+// 允許所有的源
+app.use(cors());
 
 const handleError = (res, message) => {
     res.writeHead(400,headers);

@@ -6,7 +6,7 @@
     "description": "六角課程主線任務練習用 api"
   },
   "host": "express-community.onrender.com",
-  "basePath": "/v1",
+  "basePath": "/",
   "tags": [
     {
       "name": "Index",

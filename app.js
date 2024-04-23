@@ -50,9 +50,6 @@ var indexRouter = require('./routes/index');
 // 創建 Express 應用程式實例
 var app = express();
 app.use(cors());
-app.use(cors({
-    origin: 'http://localhost:3000' // 或者您的前端應用程式的 URL
-   }));
 
 app.use('/v1', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
