@@ -6,7 +6,7 @@ const doc = {
         title: "社群平台 API",
         description: "六角課程主線任務練習用 api"
     },
-    host: "https://express-community.onrender.com",
+    host: "express-community.onrender.com",
     basePath: "/v1",
     schemes: ['https'], // 確保使用 https 協議
     tags: [ // by default: empty Array
