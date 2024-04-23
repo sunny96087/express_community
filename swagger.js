@@ -8,6 +8,7 @@ const doc = {
     },
     host: "https://express-community.onrender.com",
     basePath: "/v1",
+    schemes: ['https'], // 確保使用 https 協議
     tags: [ // by default: empty Array
       {
         name: "Index",
