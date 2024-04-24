@@ -21,10 +21,11 @@ router.get("/", async (req, res) => {
     if (keyword) {
       // 使用正則表達式進行模糊查詢
       // 'i' 選項表示不區分大小寫
-      query.$or = [
-        { content: { $regex: keyword, $options: "i" } },
-        { name: { $regex: keyword, $options: "i" } },
-      ];
+      // query.$or = [
+      //   { content: { $regex: keyword, $options: "i" } },
+      //   { name: { $regex: keyword, $options: "i" } },
+      // ];
+      query = { content: { $regex: keyword, $options: "i" } };
     }
 
     // 建立查詢選項
@@ -51,11 +52,11 @@ router.get("/", async (req, res) => {
 
     // 設定排序
     if (sort === "oldest") {
-        options.sort = { createdAt: 1 }; // 日期 從舊到新
+      options.sort = { createdAt: 1 }; // 日期 從舊到新
     } else if (sort === "mostLiked") {
-        options.sort = { likes: -1 }; // 讚數 從高到低
+      options.sort = { likes: -1 }; // 讚數 從高到低
     } else {
-        options.sort = { createdAt: -1 }; // 日期 從新到舊
+      options.sort = { createdAt: -1 }; // 日期 從新到舊
     }
 
     // 執行查詢
@@ -88,14 +89,7 @@ router.post("/", async (req, res) => {
       }
 
       // 定義及提供的數據是否只包含了允許的欄位
-      const allowedFields = [
-        "name",
-        "content",
-        "image",
-        "likes",
-        "likedBy",
-        "userId",
-      ];
+      const allowedFields = ["content", "image", "likes", "likedBy", "userId"];
       const invalidFieldsError = tools.validateFields(data, allowedFields);
       if (invalidFieldsError) {
         handleError(res, invalidFieldsError);
@@ -103,7 +97,6 @@ router.post("/", async (req, res) => {
       }
 
       const newPost = await Post.create({
-        name: data.name,
         content: data.content,
         image: data.image,
         likes: data.likes,
@@ -177,7 +170,7 @@ router.patch("/:id", async (req, res) => {
     }
 
     // 定義及檢查欄位內容不得為空
-    const fieldsToCheck = ["name", "content"];
+    const fieldsToCheck = ["content"];
     const errorMessage = tools.checkFieldsNotEmpty(data, fieldsToCheck);
     if (errorMessage) {
       handleError(res, errorMessage);
@@ -185,7 +178,7 @@ router.patch("/:id", async (req, res) => {
     }
 
     // 定義及提供的數據是否只包含了允許的欄位
-    const allowedFields = ["name", "content", "image", "likes", "likedBy"];
+    const allowedFields = ["content", "image", "likes", "likedBy"];
     const invalidFieldsError = tools.validateFields(data, allowedFields);
     if (invalidFieldsError) {
       handleError(res, invalidFieldsError);
@@ -195,7 +188,7 @@ router.patch("/:id", async (req, res) => {
     const updatedPost = await Post.findByIdAndUpdate(
       id,
       {
-        name: data.name,
+        // name: data.name,
         content: data.content,
         image: data.image,
         likes: data.likes,

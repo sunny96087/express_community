@@ -17,10 +17,10 @@ const postSchema = new mongoose.Schema(
       default: Date.now(),
       select: false, // 搜尋時不顯示
     },
-    name: {
-      type: String,
-      required: [true, "貼文姓名未填寫"],
-    },
+    // name: {
+    //   type: String,
+    //   required: [true, "貼文姓名未填寫"],
+    // },
     likes: {
       type: Number,
       default: 0,
@@ -47,7 +47,8 @@ const postSchema = new mongoose.Schema(
 );
 
 // 為 content 和 name 字段添加全文索引
-postSchema.index({ content: 'text', name: 'text' });
+// postSchema.index({ content: 'text', name: 'text' });
+postSchema.index({ content: 'text' });
 
 //                          集合名稱 單數 讓他自己加 s
 const Post = mongoose.model("Post", postSchema);
