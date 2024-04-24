@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const tools = require("../utils/tools");
-const headers = require("../utils/headers");
 const handleError = require("../utils/handleError");
 const handleSuccess = require("../utils/handleSuccess");
 const { Post, Comment } = require("../models/post");
@@ -10,17 +9,64 @@ const { Post, Comment } = require("../models/post");
 // 取得所有文章跟留言
 router.get("/", async (req, res) => {
   // #swagger.tags = ['Posts']
-  // #swagger.description = '取得所有文章'
+  // #swagger.description = '取得所有文章、留言、按讚列表，可帶排序 & 關鍵字搜尋'
+
+  const { sort, keyword } = req.query;
+
+  //   console.log(sort, keyword);
+
   try {
-    // const post = await Post.find();
-    const post = await Post.find().populate({
-      path: "comments", // 填充文章中的留言
-      populate: {
-        path: "userId", // 再填充留言中的使用者資訊
-        select: "name avatar", // 假設你只需要使用者的名稱
-      },
-    });
-    handleSuccess(res, post, "取得所有資料成功");
+    // 建立查詢條件
+    let query = {};
+    if (keyword) {
+      // 使用正則表達式進行模糊查詢
+      // 'i' 選項表示不區分大小寫
+      query.$or = [
+        { content: { $regex: keyword, $options: "i" } },
+        { name: { $regex: keyword, $options: "i" } },
+      ];
+    }
+
+    // 建立查詢選項
+    let options = {
+      populate: [
+        {
+          path: "userId", // 連接的欄位
+          select: "name avatar", // 只要這些欄位
+        },
+        {
+          path: "comments",
+          populate: {
+            path: "userId",
+            select: "name avatar",
+          },
+        },
+        {
+          path: "likedBy",
+          select: "name avatar",
+        },
+      ],
+      sort: {},
+    };
+
+    // 設定排序
+    if (sort === "oldest") {
+        options.sort = { createdAt: 1 }; // 日期 從舊到新
+    } else if (sort === "mostLiked") {
+        options.sort = { likes: -1 }; // 讚數 從高到低
+    } else {
+        options.sort = { createdAt: -1 }; // 日期 從新到舊
+    }
+
+    // 執行查詢
+    const posts = await Post.find(query, null, options);
+
+    // 檢查查詢結果是否為空
+    if (posts.length === 0) {
+      return handleError(res, "沒有相關文章，建議換個關鍵字查詢");
+    }
+
+    handleSuccess(res, posts, "取得所有資料成功");
   } catch (err) {
     handleError(res, err.message);
   }
@@ -42,7 +88,14 @@ router.post("/", async (req, res) => {
       }
 
       // 定義及提供的數據是否只包含了允許的欄位
-      const allowedFields = ["name", "content", "image", "likes"];
+      const allowedFields = [
+        "name",
+        "content",
+        "image",
+        "likes",
+        "likedBy",
+        "userId",
+      ];
       const invalidFieldsError = tools.validateFields(data, allowedFields);
       if (invalidFieldsError) {
         handleError(res, invalidFieldsError);
@@ -54,6 +107,8 @@ router.post("/", async (req, res) => {
         content: data.content,
         image: data.image,
         likes: data.likes,
+        likedBy: data.likedBy,
+        userId: data.userId,
       });
       handleSuccess(res, newPost, "新增單筆資料成功");
     } else {
@@ -130,7 +185,7 @@ router.patch("/:id", async (req, res) => {
     }
 
     // 定義及提供的數據是否只包含了允許的欄位
-    const allowedFields = ["name", "content", "image", "likes"];
+    const allowedFields = ["name", "content", "image", "likes", "likedBy"];
     const invalidFieldsError = tools.validateFields(data, allowedFields);
     if (invalidFieldsError) {
       handleError(res, invalidFieldsError);
@@ -144,6 +199,8 @@ router.patch("/:id", async (req, res) => {
         content: data.content,
         image: data.image,
         likes: data.likes,
+        likedBy: data.likedBy,
+        userId: data.userId,
       },
       { new: true } // 返回更新後的 updatedPost
     );
@@ -158,31 +215,37 @@ router.patch("/:id", async (req, res) => {
   }
 });
 
-// 新增文章按讚
+// 文章按讚
 router.patch("/like/:id", async (req, res) => {
   // #swagger.tags = ['Posts']
-  // #swagger.description = '新增指定 ID 的文章按讚 +1'
+  // #swagger.description = '對指定 ID 的文章按讚'
+
+  const { id } = req.params;
+  const userId = req.body.userId; // body 取得用戶 ID
+
   try {
-    const id = req.params.id;
-
-    // 檢查 ID 格式及是否存在
-    const isIdExist = await tools.findModelById(Post, id, res);
-    if (!isIdExist) {
-      return;
+    const post = await Post.findById(id);
+    if (!post) {
+      return handleError(res, "文章不存在");
     }
 
-    // 使用 findByIdAndUpdate 方法來增加 likes 的值
-    const updatedPost = await Post.findByIdAndUpdate(
-      id,
-      { $inc: { likes: 1 } }, // 使用 $inc 操作符來增加 likes 的值
-      { new: true } // 返回更新後的文章
-    );
+    let message; // 用來存儲返回的訊息
+    const index = post.likedBy.indexOf(userId);
 
-    if (updatedPost) {
-      handleSuccess(res, updatedPost, "按讚成功");
+    if (index !== -1) {
+      // 如果已經點過讚，移除用戶 ID 並減少點讚數
+      post.likedBy.splice(index, 1);
+      post.likes = Math.max(0, post.likes - 1); // 確保 likes 不會小於 0
+      message = "取消點讚";
     } else {
-      handleError(res, "按讚失敗");
+      // 如果未點過讚，添加用戶 ID 並增加點讚數
+      post.likedBy.push(userId);
+      post.likes += 1;
+      message = "成功點讚";
     }
+
+    await post.save();
+    handleSuccess(res, post, message); // 返回不同的成功訊息
   } catch (err) {
     handleError(res, err.message);
   }

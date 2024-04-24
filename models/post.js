@@ -25,10 +25,14 @@ const postSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    likedBy: [{   // 存儲點讚的用戶 ID
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    }],
     userId: {
-      type: String,
-      default: "",
-      // required: [true, '未登入']
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User", // 引用 User 模型
+      required: [true, "用戶 ID 是必需的。"],
     },
     comments: [
       {
@@ -41,6 +45,9 @@ const postSchema = new mongoose.Schema(
     versionKey: false, // 禁用 __v 欄位
   }
 );
+
+// 為 content 和 name 字段添加全文索引
+postSchema.index({ content: 'text', name: 'text' });
 
 //                          集合名稱 單數 讓他自己加 s
 const Post = mongoose.model("Post", postSchema);
