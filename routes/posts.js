@@ -6,6 +6,7 @@ const tools = require("../utils/tools");
 const handleError = require("../utils/handleError");
 const handleSuccess = require("../utils/handleSuccess");
 const { Post, Comment } = require("../models/post");
+const User = require("../models/user"); // 引入 Post 模型
 
 // 取得所有文章跟留言
 router.get("/", async (req, res) => {
@@ -20,13 +21,19 @@ router.get("/", async (req, res) => {
     // 建立查詢條件
     let query = {};
     if (keyword) {
-      // 使用正則表達式進行模糊查詢
-      // 'i' 選項表示不區分大小寫
-      // query.$or = [
-      //   { content: { $regex: keyword, $options: "i" } },
-      //   { name: { $regex: keyword, $options: "i" } },
-      // ];
-      query = { content: { $regex: keyword, $options: "i" } };
+      // 對userId參考的User模型中的name進行模糊搜索
+      // 注意：這裡假設你已經有一個User模型，並且你想要查詢的是與這個User模型中的name字段相關的貼文
+      // 這需要你先找到匹配的User ID，然後使用這些ID來查詢Post
+      const users = await User.find({
+        name: { $regex: keyword, $options: "i" },
+      });
+      const userIds = users.map((user) => user._id);
+      query = {
+        $or: [
+          { content: { $regex: keyword, $options: "i" } },
+          { userId: { $in: userIds } }
+        ]
+      };
     }
 
     // 建立查詢選項
@@ -64,22 +71,26 @@ router.get("/", async (req, res) => {
     const posts = await Post.find(query, null, options);
 
     // 格式化日期
-    const formattedPosts = posts.map(post => {
+    const formattedPosts = posts.map((post) => {
       const postObject = post.toObject(); // 將 Mongoose 文檔轉為 JavaScript 對象
       return {
         ...postObject,
-        createdAt: dayjs(post.createdAt).format('YYYY-MM-DD HH:mm:ss'),
-        comments: postObject.comments.map(comment => {
+        createdAt: dayjs(post.createdAt).format("YYYY-MM-DD HH:mm:ss"),
+        comments: postObject.comments.map((comment) => {
           return {
             ...comment,
-            createdAt: dayjs(comment.createdAt).format('YYYY-MM-DD HH:mm:ss')
+            createdAt: dayjs(comment.createdAt).format("YYYY-MM-DD HH:mm:ss"),
           };
-        })
+        }),
       };
     });
 
     if (formattedPosts.length === 0) {
-      return handleSuccess(res, formattedPosts, "沒有相關文章，建議換個關鍵字查詢");
+      return handleSuccess(
+        res,
+        formattedPosts,
+        "沒有相關文章，建議換個關鍵字查詢"
+      );
     }
 
     handleSuccess(res, formattedPosts, "取得所有資料成功");
@@ -245,11 +256,15 @@ router.patch("/like/:id", async (req, res) => {
       post.likedBy.splice(index, 1);
       post.likes = Math.max(0, post.likes - 1); // 確保 likes 不會小於 0
       message = "取消點讚";
+      // 從用戶的 likedPosts 中移除文章 ID
+      await User.updateOne({ _id: userId }, { $pull: { likedPosts: id } });
     } else {
       // 如果未點過讚，添加用戶 ID 並增加點讚數
       post.likedBy.push(userId);
       post.likes += 1;
       message = "成功點讚";
+      // 將文章 ID 添加到用戶的 likedPosts 中
+      await User.updateOne({ _id: userId }, { $push: { likedPosts: id } });
     }
 
     await post.save();
