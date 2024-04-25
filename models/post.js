@@ -14,7 +14,7 @@ const postSchema = new mongoose.Schema(
     },
     createdAt: {
       type: Date,
-      default: Date.now(),
+      default: Date.now,
       // select: false, // 搜尋時不顯示
     },
     // name: {

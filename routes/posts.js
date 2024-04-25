@@ -13,9 +13,9 @@ router.get("/", async (req, res) => {
   // #swagger.tags = ['Posts']
   // #swagger.description = '取得所有文章、留言、按讚列表，可帶排序 & 關鍵字搜尋'
 
-  const { sort, keyword } = req.query;
+  const { sort, keyword, userId } = req.query;
 
-  //   console.log(sort, keyword);
+    console.log(sort, keyword, userId);
 
   try {
     // 建立查詢條件
@@ -31,9 +31,14 @@ router.get("/", async (req, res) => {
       query = {
         $or: [
           { content: { $regex: keyword, $options: "i" } },
-          { userId: { $in: userIds } }
-        ]
+          { userId: { $in: userIds } },
+        ],
       };
+    }
+
+    // 如果有提供 userId，則額外篩選出該使用者的文章
+    if (userId) {
+      query.userId = userId; // 添加 userId 到查詢條件中
     }
 
     // 建立查詢選項

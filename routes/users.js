@@ -25,7 +25,7 @@ router.get("/:id", async (req, res) => {
   // #swagger.tags = ['Users']
   // #swagger.description = '取得指定 ID 使用者'
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.params.id).select("-createdAt -updatedAt -email ");
     if (user) {
       handleSuccess(res, user, "取得單筆資料成功");
     } else {
