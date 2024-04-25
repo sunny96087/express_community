@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
+const dayjs = require("dayjs");
 const tools = require("../utils/tools");
 const handleError = require("../utils/handleError");
 const handleSuccess = require("../utils/handleSuccess");
@@ -62,12 +63,26 @@ router.get("/", async (req, res) => {
     // 執行查詢
     const posts = await Post.find(query, null, options);
 
-    // 檢查查詢結果是否為空
-    if (posts.length === 0) {
-      return handleError(res, "沒有相關文章，建議換個關鍵字查詢");
+    // 格式化日期
+    const formattedPosts = posts.map(post => {
+      const postObject = post.toObject(); // 將 Mongoose 文檔轉為 JavaScript 對象
+      return {
+        ...postObject,
+        createdAt: dayjs(post.createdAt).format('YYYY-MM-DD HH:mm:ss'),
+        comments: postObject.comments.map(comment => {
+          return {
+            ...comment,
+            createdAt: dayjs(comment.createdAt).format('YYYY-MM-DD HH:mm:ss')
+          };
+        })
+      };
+    });
+
+    if (formattedPosts.length === 0) {
+      return handleSuccess(res, formattedPosts, "沒有相關文章，建議換個關鍵字查詢");
     }
 
-    handleSuccess(res, posts, "取得所有資料成功");
+    handleSuccess(res, formattedPosts, "取得所有資料成功");
   } catch (err) {
     handleError(res, err.message);
   }
