@@ -73,9 +73,9 @@ const corsOptions = {
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
   allowedHeaders: ["Content-Type", "Authorization"],
 };
-
 app.use(cors(corsOptions));
 
+// swagger, path => /v1
 app.use("/v1", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 // 設定視圖引擎，並指定視圖文件的位置

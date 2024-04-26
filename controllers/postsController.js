@@ -19,93 +19,92 @@ const postsController = {
 
     // console.log(sort, keyword, userId);
 
-      // 建立查詢條件
-      let query = {};
-      if (keyword) {
-        // 對userId參考的User模型中的name進行模糊搜索
-        // 注意：這裡假設你已經有一個User模型，並且你想要查詢的是與這個User模型中的name字段相關的貼文
-        // 這需要你先找到匹配的User ID，然後使用這些ID來查詢Post
-        const users = await User.find({
-          name: { $regex: keyword, $options: "i" },
-        });
-        const userIds = users.map((user) => user._id);
-        query = {
-          $or: [
-            { content: { $regex: keyword, $options: "i" } },
-            { userId: { $in: userIds } },
-          ],
-        };
+    // 建立查詢條件
+    let query = {};
+    if (keyword) {
+      // 對userId參考的User模型中的name進行模糊搜索
+      // 注意：這裡假設你已經有一個User模型，並且你想要查詢的是與這個User模型中的name字段相關的貼文
+      // 這需要你先找到匹配的User ID，然後使用這些ID來查詢Post
+      const users = await User.find({
+        name: { $regex: keyword, $options: "i" },
+      });
+      const userIds = users.map((user) => user._id);
+      query = {
+        $or: [
+          { content: { $regex: keyword, $options: "i" } },
+          { userId: { $in: userIds } },
+        ],
+      };
+    }
+
+    // 如果有提供 userId，則額外篩選出該使用者的文章
+    if (userId) {
+      // 檢查 ID 格式及是否存在
+      const isIdExist = await tools.findModelByIdNext(User, userId, next);
+      if (!isIdExist) {
+        return;
       }
+      query.userId = userId; // 添加 userId 到查詢條件中
+    }
 
-      // 如果有提供 userId，則額外篩選出該使用者的文章
-      if (userId) {
-        // 檢查 ID 格式及是否存在
-        const isIdExist = await tools.findModelByIdNext(User, userId, next);
-        if (!isIdExist) {
-          return;
-        }
-        query.userId = userId; // 添加 userId 到查詢條件中
-      }
-
-
-      // 建立查詢選項
-      let options = {
-        populate: [
-          {
-            path: "userId", // 連接的欄位
-            select: "name avatar", // 只要這些欄位
-          },
-          {
-            path: "comments",
-            populate: {
-              path: "userId",
-              select: "name avatar",
-            },
-          },
-          {
-            path: "likedBy",
+    // 建立查詢選項
+    let options = {
+      populate: [
+        {
+          path: "userId", // 連接的欄位
+          select: "name avatar", // 只要這些欄位
+        },
+        {
+          path: "comments",
+          populate: {
+            path: "userId",
             select: "name avatar",
           },
-        ],
-        sort: {},
+        },
+        {
+          path: "likedBy",
+          select: "name avatar",
+        },
+      ],
+      sort: {},
+    };
+
+    // 設定排序
+    if (sort === "oldest") {
+      options.sort = { createdAt: 1 }; // 日期 從舊到新
+    } else if (sort === "mostLiked") {
+      options.sort = { likes: -1 }; // 讚數 從高到低
+    } else {
+      options.sort = { createdAt: -1 }; // 日期 從新到舊
+    }
+
+    // 執行查詢
+    const posts = await Post.find(query, null, options);
+
+    // 格式化日期
+    const formattedPosts = posts.map((post) => {
+      const postObject = post.toObject(); // 將 Mongoose 文檔轉為 JavaScript 對象
+      return {
+        ...postObject,
+        createdAt: dayjs(post.createdAt).format("YYYY-MM-DD HH:mm:ss"),
+        comments: postObject.comments.map((comment) => {
+          return {
+            ...comment,
+            createdAt: dayjs(comment.createdAt).format("YYYY-MM-DD HH:mm:ss"),
+          };
+        }),
       };
+    });
 
-      // 設定排序
-      if (sort === "oldest") {
-        options.sort = { createdAt: 1 }; // 日期 從舊到新
-      } else if (sort === "mostLiked") {
-        options.sort = { likes: -1 }; // 讚數 從高到低
-      } else {
-        options.sort = { createdAt: -1 }; // 日期 從新到舊
-      }
+    if (formattedPosts.length === 0) {
+      return handleSuccess(
+        res,
+        formattedPosts,
+        "沒有相關文章，建議換個關鍵字查詢"
+      );
+    }
 
-      // 執行查詢
-      const posts = await Post.find(query, null, options);
-
-      // 格式化日期
-      const formattedPosts = posts.map((post) => {
-        const postObject = post.toObject(); // 將 Mongoose 文檔轉為 JavaScript 對象
-        return {
-          ...postObject,
-          createdAt: dayjs(post.createdAt).format("YYYY-MM-DD HH:mm:ss"),
-          comments: postObject.comments.map((comment) => {
-            return {
-              ...comment,
-              createdAt: dayjs(comment.createdAt).format("YYYY-MM-DD HH:mm:ss"),
-            };
-          }),
-        };
-      });
-
-      if (formattedPosts.length === 0) {
-        return handleSuccess(
-          res,
-          formattedPosts,
-          "沒有相關文章，建議換個關鍵字查詢"
-        );
-      }
-
-      handleSuccess(res, formattedPosts, "取得所有資料成功");
+    handleSuccess(res, formattedPosts, "取得所有資料成功");
     // try {
     // } catch (err) {
     //   handleError(res, err.message);
@@ -323,6 +322,12 @@ const postsController = {
     // 檢查 ID 格式及是否存在
     const isIdExist = await tools.findModelByIdNext(Post, postId, next);
     if (!isIdExist) {
+      return;
+    }
+
+    // 檢查 ID 格式及是否存在
+    const isUserIdExist = await tools.findModelByIdNext(User, userId, next);
+    if (!isUserIdExist) {
       return;
     }
 

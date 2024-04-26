@@ -1,21 +1,11 @@
-// const headers = require('./headers');
-
-
-function handleSuccess(res, data, message){
+function handleSuccess(res, data, message, statusCode){
 
     res.status(200).json({
+        statusCode: statusCode || 200,
         status: "success",
-        data: data,
-        message: message
+        message,
+        data,
     })
-    /**
-    res.writeHead(200);
-    res.write(JSON.stringify({
-        "status": "success",
-        "data": data,
-        "message": message
-    }));
-    res.end(); */
 }
 
 module.exports = handleSuccess;
