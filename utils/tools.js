@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const handleError = require('./handleError');
+const appError = require("../utils/appError");
 
 // 檢查欄位內容不得為空
 function checkFieldsNotEmpty(data, fields) {
@@ -35,6 +36,34 @@ async function findModelById(Model, id, res) {
 
     return model;
 }
+
+
+/**
+ * 按 ID 查找模型並驗證其存在性
+ * @param {Mongoose.Model} Model - Mongoose 模型
+ * @param {string} id - 要查找的文檔 ID
+ * @param {Function} next - Express 的 next 函數，用於錯誤處理
+ * @returns {Promise<Mongoose.Document|null>} 返回模型實例或在出錯時返回 null
+ */
+async function findModelByIdNext(Model, id, next) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        next(appError(400, "ID 格式不正確")); // 使用 next 處理格式錯誤
+        return null;
+    }
+    
+    try {
+        const model = await Model.findById(id);
+        if (!model) {
+            next(appError(404, "ID 不存在")); // 使用 next 處理查找錯誤
+            return null;
+        }
+        return model;
+    } catch (error) {
+        next(appError(500, "服務器錯誤")); // 捕捉並傳遞任何其他可能的錯誤
+        return null;
+    }
+}
+
 
 // 遍歷物件中的每個 key，如果值是字串，使用 trim 方法去掉前後的空格
 function trimObjectValues(obj) {
@@ -74,4 +103,5 @@ module.exports = {
     trimObjectValues,
     trimObjectAllValues,
     hasDataChanged,
+    findModelByIdNext
 }

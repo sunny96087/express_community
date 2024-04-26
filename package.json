@@ -5,6 +5,8 @@
   "scripts": {
     "start": "node ./bin/www",
     "dev": "nodemon ./bin/www",
+    "start:dev": "NODE_ENV=dev nodemon ./bin/www",
+    "start:production": "NODE_ENV=production nodemon ./bin/www",
     "swagger-autogen": "node ./swagger.js"
   },
   "dependencies": {
