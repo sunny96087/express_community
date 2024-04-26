@@ -29,6 +29,17 @@ const headers = require("./utils/headers");
 const handleError = require("./utils/handleError");
 const handleSuccess = require("./utils/handleSuccess");
 
+// 創建 Express 應用程式實例
+var app = express();
+
+// 程式出現重大錯誤時
+// process.on('uncaughtException', err => {
+//   // 記錄錯誤下來，等到服務都處理完後，停掉該 process
+// 	console.error('Uncaughted Exception！')
+// 	console.error(err);
+// 	process.exit(1);
+// });
+
 // ? 連接資料庫
 const DB = process.env.DATABASE.replace(
   "<password>",
@@ -49,8 +60,13 @@ var usersRouter = require("./routes/users");
 // 引入路由模組
 var indexRouter = require("./routes/index");
 
-// 創建 Express 應用程式實例
-var app = express();
+
+
+// 測試用的 middleware
+const myMiddleware = require('./middlewares/myMiddleware');
+
+// 使用 middleware
+app.use(myMiddleware);
 
 // 處理跨域問題
 // app.use(cors());
@@ -93,7 +109,11 @@ app.use("/posts", postsRouter);
 
 // 捕獲 404 錯誤並轉發到錯誤處理中間件
 app.use(function (req, res, next) {
-  next(createError(404));
+  // next(createError(404));
+  res.status(404).json({
+    status: 'error',
+    message: "無此路由資訊",
+  });
 });
 
 // 錯誤處理中間件
@@ -106,6 +126,11 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render("error");
 });
+
+// 未捕捉到的 catch 
+// process.on('unhandledRejection', (err, promise) => {
+//   console.error('未捕捉到的 rejection：', promise, '原因：', err);
+// });
 
 // 導出應用程式實例，以便在其他文件中使用
 module.exports = app;
