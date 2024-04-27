@@ -31,4 +31,4 @@ router.patch("/follow/:id", handleErrorAsync(usersController.followUser));
 // 取得指定使用者 ID 的追蹤清單
 router.get("/followList/:id", handleErrorAsync(usersController.getFollows));
 
-module.exports = router; // 將路由器實例導出，以便於其他模組使用
+module.exports = router;

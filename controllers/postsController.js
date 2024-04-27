@@ -1,15 +1,13 @@
 const express = require("express");
-const router = express.Router();
-const mongoose = require("mongoose");
 const dayjs = require("dayjs");
 const tools = require("../utils/tools");
-const handleError = require("../utils/handleError");
 const appError = require("../utils/appError");
 const handleSuccess = require("../utils/handleSuccess");
 const { Post, Comment } = require("../models/post");
 const User = require("../models/user");
 
 const postsController = {
+
   // 取得所有文章跟留言
   getPosts: async (req, res, next) => {
     // #swagger.tags = ['Posts']
@@ -105,15 +103,14 @@ const postsController = {
     }
 
     handleSuccess(res, formattedPosts, "取得所有資料成功");
-    // try {
-    // } catch (err) {
-    //   handleError(res, err.message);
-    // }
   },
+
   // 新增一筆文章
   createPost: async (req, res, next) => {
+
     // #swagger.tags = ['Posts']
     // #swagger.description = '新增一篇文章'
+
     const data = req.body;
     if (data) {
       // 定義及檢查欄位內容不得為空
@@ -136,8 +133,6 @@ const postsController = {
       const invalidFieldsError = tools.validateFields(data, allowedFields);
       if (invalidFieldsError) {
         return next(appError(400, invalidFieldsError));
-        // handleError(res, invalidFieldsError);
-        // return;
       }
 
       const newPost = await Post.create({
@@ -150,28 +145,25 @@ const postsController = {
       handleSuccess(res, newPost, "新增單筆資料成功");
     } else {
       return next(appError(400, "新增單筆資料失敗"));
-      // handleError(res);
     }
-    // try {
-    // } catch (err) {
-    //   handleError(res, err.message);
-    // }
   },
+
   // 刪除所有文章
   deleteAllPosts: async (req, res, next) => {
+
     // #swagger.tags = ['Posts']
     // #swagger.description = '刪除全部的文章'
+
     const data = await Post.deleteMany({});
     handleSuccess(res, [], "刪除全部資料成功");
-    // try {
-    // } catch (err) {
-    //   handleError(res, err.message);
-    // }
   },
+
   // 刪除單筆文章
   deletePost: async (req, res, next) => {
+
     // #swagger.tags = ['Posts']
     // #swagger.description = '刪除指定 ID 的文章'
+
     const id = req.params.id;
 
     // 檢查 ID 格式及是否存在
@@ -182,15 +174,14 @@ const postsController = {
 
     await Post.findByIdAndDelete(id);
     handleSuccess(res, null, "刪除單筆資料成功");
-    // try {
-    // } catch (err) {
-    //   handleError(res, err.message);
-    // }
   },
+
   // 修改單筆文章
   updatePost: async (req, res, next) => {
+
     // #swagger.tags = ['Posts']
     // #swagger.description = '修改指定 ID 的文章'
+
     const id = req.params.id;
     let data = req.body;
 
@@ -207,16 +198,13 @@ const postsController = {
     // 使用 hasDataChanged 函數來檢查資料是否有改變
     const oldData = await Post.findById(id);
     if (!tools.hasDataChanged(oldData, data)) {
-      handleError(res, "資料未變更");
-      return;
+      return next(appError(400, "資料未變更"));
     }
 
     // 定義及檢查欄位內容不得為空
     const fieldsToCheck = ["content"];
     const errorMessage = tools.checkFieldsNotEmpty(data, fieldsToCheck);
     if (errorMessage) {
-      // handleError(res, errorMessage);
-      // return;
       return next(appError(400, errorMessage));
     }
 
@@ -224,8 +212,6 @@ const postsController = {
     const allowedFields = ["content", "image", "likes", "likedBy"];
     const invalidFieldsError = tools.validateFields(data, allowedFields);
     if (invalidFieldsError) {
-      // handleError(res, invalidFieldsError);
-      // return;
       return next(appError(400, invalidFieldsError));
     }
 
@@ -244,23 +230,19 @@ const postsController = {
     if (updatedPost) {
       handleSuccess(res, updatedPost, "更新單筆資料成功");
     } else {
-      // handleError(res);
       return next(appError(400, "更新單筆資料失敗"));
     }
-    // try {
-    // } catch (err) {
-    //   handleError(res, err.message);
-    // }
   },
+
   // 文章按讚
   likePost: async (req, res, next) => {
+
     // #swagger.tags = ['Posts']
     // #swagger.description = '對指定 ID 的文章按讚'
 
     const { id } = req.params;
     const userId = req.body.userId; // body 取得用戶 ID
     if (!userId || userId.trim() === "") {
-      // return handleError(res, "userId 不能為空");
       return next(appError(400, "userId 不能為空"));
     }
 
@@ -300,22 +282,19 @@ const postsController = {
     }
 
     await post.save();
-    handleSuccess(res, post, message); // 返回不同的成功訊息
-    // try {
-    // }
-    //  catch (err) {
-    //   handleError(res, err.message);
-    // }
+    handleSuccess(res, post, message);
   },
+
   // 新增單筆留言
   createComment: async (req, res, next) => {
+
     // #swagger.tags = ['Posts']
     // #swagger.description = '新增指定 ID 的文章留言'
+
     const { postId } = req.params; // 獲得文章 ID
     const { content, userId } = req.body; // 獲得留言內容和用戶 ID
 
     if (!content || !userId) {
-      // return handleError(res, "留言內容和用戶 ID 是必填項");
       return next(appError(400, "留言內容和用戶 ID 是必填項"));
     }
 
@@ -347,15 +326,14 @@ const postsController = {
     await postExists.save();
 
     handleSuccess(res, newComment, "留言新增成功");
-    // try {
-    // } catch (err) {
-    //   handleError(res, err.message);
-    // }
   },
+
   // 刪除留言
   deleteComment: async (req, res, next) => {
+
     // #swagger.tags = ['Posts']
     // #swagger.description = '刪除指定 ID 的文章留言'
+
     const { commentId } = req.params; // 獲得留言 ID
 
     // 檢查 ID 格式及是否存在
@@ -378,10 +356,6 @@ const postsController = {
     );
 
     handleSuccess(res, { id: deletedComment._id }, "留言刪除成功");
-    // try {
-    // } catch (err) {
-    //   handleError(res, err.message);
-    // }
   },
 };
 
