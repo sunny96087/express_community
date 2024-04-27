@@ -224,7 +224,6 @@ const usersController = {
   },
 
   // 取得指定 ID 的使用者按讚文章資料
-  // BUG
   getLikedPosts: async function (req, res, next) {
     // #swagger.tags = ['Users']
     // #swagger.description = '取得指定 ID 的使用者按讚文章資料'
@@ -237,25 +236,24 @@ const usersController = {
       return;
     }
 
-    // 使用 populate 方法來取回按讚的文章列表
-    // 並且在文章列表中的 userId 欄位取得對應的使用者名稱
+    // 使用 populate 方法來取回使用者資料及使用者追蹤清單
+    // 並且在 following 欄位中的 userId 欄位取得對應的使用者名稱和頭像
     const user = await User.findById(id)
-      .populate({
-        path: "likedPosts", // 填充 likedPosts 欄位
-        populate: {
-          path: "userId", // 在 likedPosts 中的每個文檔填充 userId 欄位
-          select: "name", // 只取得 name 欄位
-        },
-        select: "content image createdAt likes userId", // 只取得這些欄位
-      })
-      .select("-createdAt -updatedAt"); // 排除 User 模型本身的 createdAt 和 updatedAt 欄位;
+    .populate({
+       path: "likedPosts",
+       select: "content image createdAt likes userId",
+       populate: {
+         path: "userId", // 填充 likedPosts 中的 userId 欄位
+         select: "avatar name", // 只取得這些欄位
+       }
+    })
+    .select("-createdAt -updatedAt");
 
     if (!user) {
-      return next(appError(400, "使用者不存在"));
-      // return handleError(res, "使用者不存在");
+        return next(appError(400, "使用者不存在"));
     }
-
-    // 格式化日期
+    
+    // 格式化 likedPosts 欄位中的 createdAt 日期
     const formattedUser = {
       ...user.toObject(),
       likedPosts: user.likedPosts.map((post) => {
