@@ -22,6 +22,7 @@ const logger = require("./logger"); // 引入 logger.js => Winston 日誌
 const swaggerUi = require("swagger-ui-express");
 const swaggerFile = require("./swagger_output.json");
 
+
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 dotenv.config({ path: "./config.env" });
@@ -67,13 +68,13 @@ const myMiddleware = require("./middlewares/myMiddleware");
 app.use(myMiddleware);
 
 // 處理跨域問題
-// app.use(cors()); // 全部放行 危險！
-const corsOptions = {
-  origin: ["https://express-community.onrender.com", "http://localhost:3000"],
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
-  allowedHeaders: ["Content-Type", "Authorization"],
-};
-app.use(cors(corsOptions));
+app.use(cors()); // 全部放行 危險！
+// const corsOptions = {
+//   origin: ["https://express-community.onrender.com", "https://localhost:3000", "https://localhost:3666"],
+//   methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+//   allowedHeaders: ["Content-Type", "Authorization"],
+// };
+// app.use(cors(corsOptions));
 
 // swagger, path => /v1
 app.use("/v1", swaggerUi.serve, swaggerUi.setup(swaggerFile));

@@ -5,7 +5,7 @@
     "title": "社群平台 API",
     "description": "六角課程主線任務練習用 api"
   },
-  "host": "express-community.onrender.com",
+  "host": "localhost:3666",
   "basePath": "/",
   "tags": [
     {
@@ -22,6 +22,7 @@
     }
   ],
   "schemes": [
+    "http",
     "https"
   ],
   "paths": {
@@ -40,10 +41,7 @@
     },
     "/users/": {
       "get": {
-        "tags": [
-          "Users"
-        ],
-        "description": "取得所有使用者",
+        "description": "",
         "responses": {
           "default": {
             "description": ""
@@ -51,30 +49,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Users"
-        ],
-        "description": "新增一位使用者",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "example": "any"
-                },
-                "email": {
-                  "example": "any"
-                },
-                "password": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
+        "description": "",
         "responses": {
           "default": {
             "description": ""
@@ -82,10 +57,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Users"
-        ],
-        "description": "刪除所有使用者",
+        "description": "",
         "responses": {
           "default": {
             "description": ""
@@ -95,10 +67,7 @@
     },
     "/users/{id}": {
       "get": {
-        "tags": [
-          "Users"
-        ],
-        "description": "取得指定 ID 使用者",
+        "description": "",
         "parameters": [
           {
             "name": "id",
@@ -114,10 +83,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Users"
-        ],
-        "description": "刪除指定 ID 使用者",
+        "description": "",
         "parameters": [
           {
             "name": "id",
@@ -133,40 +99,67 @@
         }
       },
       "patch": {
-        "tags": [
-          "Users"
-        ],
-        "description": "修改指定 ID 使用者",
+        "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
-          },
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/users/likedPosts/{id}": {
+      "get": {
+        "description": "",
+        "parameters": [
           {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "example": "any"
-                },
-                "content": {
-                  "example": "any"
-                },
-                "email": {
-                  "example": "any"
-                },
-                "password": {
-                  "example": "any"
-                },
-                "birthday": {
-                  "example": "any"
-                }
-              }
-            }
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/users/follow/{id}": {
+      "patch": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/users/followList/{id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
           }
         ],
         "responses": {
@@ -178,10 +171,7 @@
     },
     "/posts/": {
       "get": {
-        "tags": [
-          "Posts"
-        ],
-        "description": "取得所有文章",
+        "description": "",
         "responses": {
           "default": {
             "description": ""
@@ -189,33 +179,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Posts"
-        ],
-        "description": "新增一篇文章",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "example": "any"
-                },
-                "content": {
-                  "example": "any"
-                },
-                "image": {
-                  "example": "any"
-                },
-                "likes": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
+        "description": "",
         "responses": {
           "default": {
             "description": ""
@@ -223,10 +187,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Posts"
-        ],
-        "description": "刪除全部的文章",
+        "description": "",
         "responses": {
           "default": {
             "description": ""
@@ -236,10 +197,7 @@
     },
     "/posts/{id}": {
       "delete": {
-        "tags": [
-          "Posts"
-        ],
-        "description": "刪除指定 ID 的文章",
+        "description": "",
         "parameters": [
           {
             "name": "id",
@@ -255,37 +213,13 @@
         }
       },
       "patch": {
-        "tags": [
-          "Posts"
-        ],
-        "description": "修改指定 ID 的文章",
+        "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "example": "any"
-                },
-                "content": {
-                  "example": "any"
-                },
-                "image": {
-                  "example": "any"
-                },
-                "likes": {
-                  "example": "any"
-                }
-              }
-            }
           }
         ],
         "responses": {
@@ -297,13 +231,46 @@
     },
     "/posts/like/{id}": {
       "patch": {
-        "tags": [
-          "Posts"
-        ],
-        "description": "新增指定 ID 的文章按讚 +1",
+        "description": "",
         "parameters": [
           {
             "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/posts/comments/{postId}": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/posts/comments/{commentId}": {
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "commentId",
             "in": "path",
             "required": true,
             "type": "string"

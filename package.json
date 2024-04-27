@@ -7,7 +7,7 @@
     "dev": "nodemon ./bin/www",
     "start:dev": "NODE_ENV=dev nodemon ./bin/www",
     "start:production": "NODE_ENV=production nodemon ./bin/www",
-    "swagger-autogen": "node ./swagger.js"
+    "swagger": "node ./swagger.js"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",

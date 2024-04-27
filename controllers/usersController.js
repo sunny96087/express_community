@@ -8,10 +8,19 @@ const { Post, Comment } = require("../models/post");
 
 const usersController = {
   // 取得全部使用者
-  getUsers: async function (req, res, next) {
 
-    // #swagger.tags = ['Users']
-    // #swagger.description = '取得所有使用者'
+  getUsers: async function (req, res, next) {
+    /**
+     * @swagger
+     * /users:
+     *   get:
+     *     summary: '取得所有使用者'
+     *     tags: ['Users']
+     */
+        /* 	
+        #swagger.tags = ['Users']
+        #swagger.description = '取得所有使用者' 
+        */
 
     const user = await User.find(); // 查詢所有資料
     handleSuccess(res, user, "取得所有資料成功");
