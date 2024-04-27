@@ -8,7 +8,6 @@ const { Post, Comment } = require("../models/post");
 
 const usersController = {
   // 取得全部使用者
-
   getUsers: async function (req, res, next) {
     /**
      * @swagger
@@ -29,9 +28,6 @@ const usersController = {
   // 獲取特定使用者
   getUser: async function (req, res, next) {
 
-    // #swagger.tags = ['Users']
-    // #swagger.description = '取得指定 ID 使用者'
-
     // 檢查 ID 格式及是否存在
     const isIdExist = await tools.findModelByIdNext(User, req.params.id, next);
     if (!isIdExist) {
@@ -51,9 +47,6 @@ const usersController = {
 
   // 新增一位使用者
   createUser: async function (req, res, next) {
-
-    // #swagger.tags = ['Users']
-    // #swagger.description = '新增一位使用者'
 
     let data = req.body;
     data = tools.trimObjectAllValues(data);
@@ -105,21 +98,15 @@ const usersController = {
     }
   },
 
-  // 定義 DELETE 請求的路由，用於刪除全部資料
+  // 刪除全部使用者資料
   deleteAllUsers: async function (req, res, next) {
-
-    // #swagger.tags = ['Users']
-    // #swagger.description = '刪除所有使用者'
 
     const data = await User.deleteMany({}); // 刪除全部資料
     handleSuccess(res, [], "刪除全部資料成功");
   },
 
-  // 定義 DELETE 請求的路由，用於刪除單筆資料
+  // 刪除指定 ID 使用者資料
   deleteUser: async function (req, res, next) {
-
-    // #swagger.tags = ['Users']
-    // #swagger.description = '刪除指定 ID 使用者'
 
     const id = req.params.id;
 
@@ -133,11 +120,8 @@ const usersController = {
     handleSuccess(res, null, "刪除單筆資料成功");
   },
 
-  // 定義 PATCH 請求的路由，用於更新單筆資料
+  // 修改指定 ID 使用者資料
   updateUser: async function (req, res, next) {
-
-    // #swagger.tags = ['Users']
-    // #swagger.description = '修改指定 ID 使用者'
 
     const id = req.params.id;
     let data = req.body;
@@ -165,7 +149,7 @@ const usersController = {
     }
 
     // 定義及提供的數據是否只包含了允許的欄位
-    const allowedFields = ["name", "gender", "email", "password", "birthday"];
+    const allowedFields = ["name", "gender", "email", "password", "birthday", "avatar"];
     const invalidFieldsError = tools.validateFields(data, allowedFields);
     if (invalidFieldsError) {
       return next(appError(400, invalidFieldsError));
@@ -180,6 +164,7 @@ const usersController = {
         email: data.email,
         password: data.password,
         birthday: data.birthday,
+        avatar: data.avatar,
       },
       { new: true }
     );
@@ -194,9 +179,6 @@ const usersController = {
 
   // 取得指定 ID 的使用者按讚文章資料
   getLikedPosts: async function (req, res, next) {
-
-    // #swagger.tags = ['Users']
-    // #swagger.description = '取得指定 ID 的使用者按讚文章資料'
 
     const id = req.params.id;
 
@@ -239,9 +221,6 @@ const usersController = {
 
   // 追蹤或取消追蹤用戶
   followUser: async function (req, res, next) {
-
-    // #swagger.tags = ['Users']
-    // #swagger.description = '追蹤或取消追蹤指定 ID 的用戶'
 
     const { id } = req.params; // 獲取要追蹤或取消追蹤的用戶ID
     const userId = req.body.userId; // 獲取當前用戶ID
@@ -288,9 +267,6 @@ const usersController = {
 
   // 取得指定使用者 ID 的追蹤清單
   getFollows: async function (req, res, next) {
-
-    // #swagger.tags = ['Users']
-    // #swagger.description = '取得指定使用者 ID 的追蹤清單'
 
     const id = req.params.id;
 

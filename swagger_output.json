@@ -22,7 +22,6 @@
     }
   ],
   "schemes": [
-    "http",
     "https"
   ],
   "paths": {
@@ -41,7 +40,10 @@
     },
     "/users/": {
       "get": {
-        "description": "",
+        "tags": [
+          "Users"
+        ],
+        "description": "取得所有使用者資料",
         "responses": {
           "default": {
             "description": ""
@@ -49,7 +51,73 @@
         }
       },
       "post": {
-        "description": "",
+        "tags": [
+          "Users"
+        ],
+        "description": "新增一位使用者",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "用戶名稱"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "email": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "用戶電子郵件"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "password": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "用戶密碼"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "default": {
             "description": ""
@@ -57,7 +125,10 @@
         }
       },
       "delete": {
-        "description": "",
+        "tags": [
+          "Users"
+        ],
+        "description": "刪除所有使用者資料",
         "responses": {
           "default": {
             "description": ""
@@ -67,7 +138,10 @@
     },
     "/users/{id}": {
       "get": {
-        "description": "",
+        "tags": [
+          "Users"
+        ],
+        "description": "取得指定 ID 使用者資料",
         "parameters": [
           {
             "name": "id",
@@ -83,7 +157,10 @@
         }
       },
       "delete": {
-        "description": "",
+        "tags": [
+          "Users"
+        ],
+        "description": "刪除指定 ID 使用者資料",
         "parameters": [
           {
             "name": "id",
@@ -99,13 +176,95 @@
         }
       },
       "patch": {
-        "description": "",
+        "tags": [
+          "Users"
+        ],
+        "description": "修改指定 ID 使用者資料",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "名稱"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "gender": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "性別 (1:male, 2:female, 3:other)"
+                    }
+                  }
+                },
+                "password": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "密碼"
+                    }
+                  }
+                },
+                "birthday": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "生日"
+                    }
+                  }
+                },
+                "avatar": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "頭像"
+                    }
+                  }
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -117,7 +276,10 @@
     },
     "/users/likedPosts/{id}": {
       "get": {
-        "description": "",
+        "tags": [
+          "Users"
+        ],
+        "description": "取得指定 ID 的使用者按讚文章資料",
         "parameters": [
           {
             "name": "id",
@@ -135,13 +297,43 @@
     },
     "/users/follow/{id}": {
       "patch": {
-        "description": "",
+        "tags": [
+          "Users"
+        ],
+        "description": "追蹤或取消追蹤指定 ID 的用戶",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "當前用戶ID"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -153,7 +345,10 @@
     },
     "/users/followList/{id}": {
       "get": {
-        "description": "",
+        "tags": [
+          "Users"
+        ],
+        "description": "取得指定使用者 ID 的追蹤清單",
         "parameters": [
           {
             "name": "id",
@@ -171,7 +366,31 @@
     },
     "/posts/": {
       "get": {
-        "description": "",
+        "tags": [
+          "Posts"
+        ],
+        "description": "取得所有文章、留言、按讚列表，可帶排序 & 關鍵字 & userId 搜尋",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "排序方式：預設最新, oldest（最舊）、mostLiked（最多讚）",
+            "type": "string",
+            "default": "newest"
+          },
+          {
+            "name": "keyword",
+            "in": "query",
+            "description": "關鍵字，用於文章內容和用戶名稱的模糊搜索",
+            "type": "string"
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "description": "用戶ID，用於篩選特定用戶的文章",
+            "type": "string"
+          }
+        ],
         "responses": {
           "default": {
             "description": ""
@@ -179,7 +398,69 @@
         }
       },
       "post": {
-        "description": "",
+        "tags": [
+          "Posts"
+        ],
+        "description": "新增一篇文章",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "用戶 ID"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "content": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "文章內容"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "image": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "文章圖片"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "default": {
             "description": ""
@@ -187,7 +468,10 @@
         }
       },
       "delete": {
-        "description": "",
+        "tags": [
+          "Posts"
+        ],
+        "description": "刪除全部的文章",
         "responses": {
           "default": {
             "description": ""
@@ -197,7 +481,10 @@
     },
     "/posts/{id}": {
       "delete": {
-        "description": "",
+        "tags": [
+          "Posts"
+        ],
+        "description": "刪除指定 ID 的文章",
         "parameters": [
           {
             "name": "id",
@@ -213,13 +500,56 @@
         }
       },
       "patch": {
-        "description": "",
+        "tags": [
+          "Posts"
+        ],
+        "description": "修改指定 ID 的文章",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "content": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "文章內容"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "image": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "文章圖片"
+                    }
+                  }
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -231,13 +561,43 @@
     },
     "/posts/like/{id}": {
       "patch": {
-        "description": "",
+        "tags": [
+          "Posts"
+        ],
+        "description": "對指定 ID 的文章按讚",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "用戶 ID"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -249,13 +609,60 @@
     },
     "/posts/comments/{postId}": {
       "post": {
-        "description": "",
+        "tags": [
+          "Posts"
+        ],
+        "description": "新增指定 ID 的文章留言",
         "parameters": [
           {
             "name": "postId",
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "用戶 ID"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "content": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "留言內容"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -267,7 +674,10 @@
     },
     "/posts/comments/{commentId}": {
       "delete": {
-        "description": "",
+        "tags": [
+          "Posts"
+        ],
+        "description": "刪除指定 ID 的文章留言",
         "parameters": [
           {
             "name": "commentId",

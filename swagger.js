@@ -10,10 +10,11 @@ const doc = {
     },
     // 開發
     // host: 'localhost:3666',
+    // schemes: ['http', 'https'],
     // 部署
     host: "express-community.onrender.com",
+    schemes: ['https'],
     basePath: "/",
-    schemes: ['http', 'https'],
     tags: [ // by default: empty Array
       {
         name: "Index",

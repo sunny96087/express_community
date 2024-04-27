@@ -7,14 +7,9 @@ const { Post, Comment } = require("../models/post");
 const User = require("../models/user");
 
 const postsController = {
-
   // 取得所有文章跟留言
   getPosts: async (req, res, next) => {
-    // #swagger.tags = ['Posts']
-    // #swagger.description = '取得所有文章、留言、按讚列表，可帶排序 & 關鍵字 & userId 搜尋'
-
     const { sort, keyword, userId } = req.query;
-
     // console.log(sort, keyword, userId);
 
     // 建立查詢條件
@@ -107,10 +102,6 @@ const postsController = {
 
   // 新增一筆文章
   createPost: async (req, res, next) => {
-
-    // #swagger.tags = ['Posts']
-    // #swagger.description = '新增一篇文章'
-
     const data = req.body;
     if (data) {
       // 定義及檢查欄位內容不得為空
@@ -150,20 +141,12 @@ const postsController = {
 
   // 刪除所有文章
   deleteAllPosts: async (req, res, next) => {
-
-    // #swagger.tags = ['Posts']
-    // #swagger.description = '刪除全部的文章'
-
     const data = await Post.deleteMany({});
     handleSuccess(res, [], "刪除全部資料成功");
   },
 
   // 刪除單筆文章
   deletePost: async (req, res, next) => {
-
-    // #swagger.tags = ['Posts']
-    // #swagger.description = '刪除指定 ID 的文章'
-
     const id = req.params.id;
 
     // 檢查 ID 格式及是否存在
@@ -178,10 +161,6 @@ const postsController = {
 
   // 修改單筆文章
   updatePost: async (req, res, next) => {
-
-    // #swagger.tags = ['Posts']
-    // #swagger.description = '修改指定 ID 的文章'
-
     const id = req.params.id;
     let data = req.body;
 
@@ -236,10 +215,6 @@ const postsController = {
 
   // 文章按讚
   likePost: async (req, res, next) => {
-
-    // #swagger.tags = ['Posts']
-    // #swagger.description = '對指定 ID 的文章按讚'
-
     const { id } = req.params;
     const userId = req.body.userId; // body 取得用戶 ID
     if (!userId || userId.trim() === "") {
@@ -287,10 +262,6 @@ const postsController = {
 
   // 新增單筆留言
   createComment: async (req, res, next) => {
-
-    // #swagger.tags = ['Posts']
-    // #swagger.description = '新增指定 ID 的文章留言'
-
     const { postId } = req.params; // 獲得文章 ID
     const { content, userId } = req.body; // 獲得留言內容和用戶 ID
 
@@ -330,10 +301,6 @@ const postsController = {
 
   // 刪除留言
   deleteComment: async (req, res, next) => {
-
-    // #swagger.tags = ['Posts']
-    // #swagger.description = '刪除指定 ID 的文章留言'
-
     const { commentId } = req.params; // 獲得留言 ID
 
     // 檢查 ID 格式及是否存在
@@ -345,7 +312,6 @@ const postsController = {
     // 查找並刪除留言
     const deletedComment = await Comment.findByIdAndDelete(commentId);
     if (!deletedComment) {
-      // return handleError(res, "留言不存在。");
       return next(appError(400, "留言不存在。"));
     }
 
