@@ -23,11 +23,6 @@ const usersController = {
   getUser: async function (req, res, next) {
 
     const id = req.user.id;
-    // // 檢查 ID 格式及是否存在
-    // const isIdExist = await tools.findModelByIdNext(User, id, next);
-    // if (!isIdExist) {
-    //   return;
-    // }
 
     const user = await User.findById(id).select(
       "-createdAt -updatedAt -email "
@@ -113,7 +108,8 @@ const usersController = {
 
   // 修改指定 ID 使用者資料
   updateUser: async function (req, res, next) {
-    const id = req.params.id;
+    const id = req.user.id;
+    // const id = req.params.id;
     let data = req.body;
 
     // 使用 trimObjectValues 函數來去掉資料中所有值的空格
@@ -262,9 +258,8 @@ const usersController = {
 
   // 取得指定使用者 ID 的追蹤清單
   getFollows: async function (req, res, next) {
-    // const id = req.params.id;
-    console.log(req.user._id);
-    const id = req.user.id;
+    const id = req.params.id;
+    // const id = req.user.id;
 
     // 檢查 ID 格式及是否存在
     const isIdExist = await tools.findModelByIdNext(User, id, next);
@@ -309,7 +304,7 @@ const usersController = {
     handleSuccess(res, formattedUser, "取得單筆資料成功");
   },
 
-  // todo 註冊
+  // 註冊
   signUp: async function (req, res, next) {
     let data = req.body;
 
@@ -349,17 +344,26 @@ const usersController = {
       name,
     });
 
-    // 發送 JWT (註冊完直接登入)
+    // 註冊成功，不登入
     // handleSuccess(res, newUser, "註冊成功");
+    
+    // 發送 JWT (註冊完直接登入)
     generateSendJWT(newUser,201,res);
   },
 
-  // todo 登入
+  // 登入
   signIn: async function (req, res, next) {
     const { email, password } = req.body;
     if (!email || !password) {
       return next(appError( 400,'帳號密碼不可為空'));
     }
+
+    // 檢查 email 是否存在
+    const existingUser = await User.findOne({ email });
+    if (!existingUser) {
+      return next(appError(400, "帳號不存在"));
+    }
+    
     const user = await User.findOne({ email }).select('+password');
     const auth = await bcrypt.compare(password, user.password);
     if(!auth){

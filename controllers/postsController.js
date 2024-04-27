@@ -102,10 +102,13 @@ const postsController = {
 
   // 新增一筆文章
   createPost: async (req, res, next) => {
+    // 直接從 token 拿 id
+    const id = req.user.id;
     const data = req.body;
+
     if (data) {
       // 定義及檢查欄位內容不得為空
-      const fieldsToCheck = ["content", "userId"];
+      const fieldsToCheck = ["content"];
       const errorMessage = tools.checkFieldsNotEmpty(data, fieldsToCheck);
       if (errorMessage) {
         // handleError(res, errorMessage);
@@ -114,13 +117,13 @@ const postsController = {
       }
 
       // 檢查 ID 格式及是否存在
-      const isIdExist = await tools.findModelByIdNext(User, data.userId, next);
+      const isIdExist = await tools.findModelByIdNext(User, id, next);
       if (!isIdExist) {
         return;
       }
 
       // 定義及提供的數據是否只包含了允許的欄位
-      const allowedFields = ["content", "image", "likes", "likedBy", "userId"];
+      const allowedFields = ["content", "image", "likes", "likedBy"];
       const invalidFieldsError = tools.validateFields(data, allowedFields);
       if (invalidFieldsError) {
         return next(appError(400, invalidFieldsError));
@@ -131,7 +134,7 @@ const postsController = {
         image: data.image,
         likes: data.likes,
         likedBy: data.likedBy,
-        userId: data.userId,
+        userId: id,
       });
       handleSuccess(res, newPost, "新增單筆資料成功");
     } else {

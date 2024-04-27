@@ -3,7 +3,7 @@ const router = express.Router(); // 創建一個路由器實例
 const handleErrorAsync = require("../utils/handleErrorAsync");
 
 const usersController = require("../controllers/usersController");
-const { isAuth, generateSendJWT } = require("../utils/auth");
+const { isAuth } = require("../utils/auth");
 
 // 定義 GET 請求的路由，用於獲取所有資料
 router.get(
@@ -77,7 +77,8 @@ router.delete(
 
 // 修改指定 ID 使用者資料
 router.patch(
-  "/:id",
+  "/",
+  isAuth,
   handleErrorAsync(usersController.updateUser)
   /** 
     #swagger.tags = ['Users']
@@ -147,15 +148,72 @@ router.patch(
 
 // 取得指定使用者 ID 的追蹤清單
 router.get(
-  "/followList",
-  isAuth,
+  "/followList/:id",
   handleErrorAsync(usersController.getFollows)
   // #swagger.tags = ['Users']
   // #swagger.description = '取得指定使用者 ID 的追蹤清單'
 );
 
-router.post("/sign_up", handleErrorAsync(usersController.signUp));
+// 註冊
+router.post(
+  "/sign_up",
+  handleErrorAsync(usersController.signUp)
+  /** 
+    #swagger.tags = ['Users']
+    #swagger.description = '註冊成為使用者'
 
-router.post("/sign_in", handleErrorAsync(usersController.signIn));
+    #swagger.parameters['user'] = {
+        in: 'body',
+        required: true,
+        schema: {
+            name: {
+                type: 'string',
+                description: '名稱',
+                required: true
+            },
+            password: {
+                type: 'string',
+                description: '密碼',
+                required: true
+            },
+            confirmPassword: {
+                type: 'string',
+                description: '再次確認密碼',
+                required: true
+            },
+            email: {
+                type: 'string',
+                description: '電子郵件',
+                required: true
+            }
+        }
+    }
+    */
+);
+
+// 登入
+router.post("/sign_in", handleErrorAsync(usersController.signIn)
+  /** 
+    #swagger.tags = ['Users']
+    #swagger.description = '登入'
+
+    #swagger.parameters['user'] = {
+        in: 'body',
+        required: true,
+        schema: {
+            email: {
+                type: 'string',
+                description: '帳號 (電子郵件)',
+                required: true
+            },
+            password: {
+                type: 'string',
+                description: '密碼',
+                required: true
+            }
+        }
+    }
+    */
+);
 
 module.exports = router;

@@ -3,6 +3,7 @@ const router = express.Router();
 const handleErrorAsync = require("../utils/handleErrorAsync");
 
 const postsController = require("../controllers/postsController");
+const { isAuth } = require("../utils/auth");
 
 // 取得所有文章跟留言
 router.get(
@@ -21,6 +22,7 @@ router.get(
 // 新增一筆文章
 router.post(
   "/",
+  isAuth,
   handleErrorAsync(postsController.createPost)
   /** 
     #swagger.tags = ['Posts']
@@ -30,11 +32,6 @@ router.post(
         in: 'body',
         required: true,
         schema: {
-            userId: {
-                type: 'string',
-                description: '用戶 ID',
-                required: true
-            },
             content: {
                 type: 'string',
                 description: '文章內容',
@@ -65,7 +62,7 @@ router.delete(
   // #swagger.description = '刪除指定 ID 的文章'
 );
 
-// 修改單筆文章
+// 修改單筆文章 要加上 isAuth
 router.patch(
   "/:id",
   handleErrorAsync(postsController.updatePost)
@@ -91,6 +88,7 @@ router.patch(
     */
 );
 
+// todo
 // 文章按讚
 router.patch(
   "/like/:id",
