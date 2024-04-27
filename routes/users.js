@@ -3,10 +3,12 @@ const router = express.Router(); // 創建一個路由器實例
 const handleErrorAsync = require("../utils/handleErrorAsync");
 
 const usersController = require("../controllers/usersController");
+const { isAuth, generateSendJWT } = require("../utils/auth");
 
 // 定義 GET 請求的路由，用於獲取所有資料
 router.get(
   "/",
+  isAuth,
   handleErrorAsync(usersController.getUsers)
   /* 	
     #swagger.tags = ['Users']
@@ -16,7 +18,8 @@ router.get(
 
 // 獲取特定使用者
 router.get(
-  "/:id",
+  "/userOne",
+  isAuth,
   handleErrorAsync(usersController.getUser)
   /*
     #swagger.tags = ['Users']
@@ -90,7 +93,7 @@ router.patch(
                 required: true
             },
             gender: {
-                type: 'string',
+                type: 'Number',
                 description: '性別 (1:male, 2:female, 3:other)',
             },
             password: {
@@ -144,10 +147,15 @@ router.patch(
 
 // 取得指定使用者 ID 的追蹤清單
 router.get(
-  "/followList/:id",
+  "/followList",
+  isAuth,
   handleErrorAsync(usersController.getFollows)
   // #swagger.tags = ['Users']
   // #swagger.description = '取得指定使用者 ID 的追蹤清單'
 );
+
+router.post("/sign_up", handleErrorAsync(usersController.signUp));
+
+router.post("/sign_in", handleErrorAsync(usersController.signIn));
 
 module.exports = router;

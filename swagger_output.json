@@ -5,7 +5,7 @@
     "title": "社群平台 API",
     "description": "六角課程主線任務練習用 api"
   },
-  "host": "express-community.onrender.com",
+  "host": "localhost:3666",
   "basePath": "/",
   "tags": [
     {
@@ -22,6 +22,7 @@
     }
   ],
   "schemes": [
+    "http",
     "https"
   ],
   "paths": {
@@ -44,6 +45,13 @@
           "Users"
         ],
         "description": "取得所有使用者資料",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "type": "string"
+          }
+        ],
         "responses": {
           "default": {
             "description": ""
@@ -136,7 +144,7 @@
         }
       }
     },
-    "/users/{id}": {
+    "/users/userOne": {
       "get": {
         "tags": [
           "Users"
@@ -144,9 +152,8 @@
         "description": "取得指定 ID 使用者資料",
         "parameters": [
           {
-            "name": "id",
-            "in": "path",
-            "required": true,
+            "name": "token",
+            "in": "header",
             "type": "string"
           }
         ],
@@ -155,7 +162,9 @@
             "description": ""
           }
         }
-      },
+      }
+    },
+    "/users/{id}": {
       "delete": {
         "tags": [
           "Users"
@@ -216,7 +225,7 @@
                   "properties": {
                     "type": {
                       "type": "string",
-                      "example": "string"
+                      "example": "Number"
                     },
                     "description": {
                       "type": "string",
@@ -343,7 +352,7 @@
         }
       }
     },
-    "/users/followList/{id}": {
+    "/users/followList": {
       "get": {
         "tags": [
           "Users"
@@ -351,12 +360,31 @@
         "description": "取得指定使用者 ID 的追蹤清單",
         "parameters": [
           {
-            "name": "id",
-            "in": "path",
-            "required": true,
+            "name": "token",
+            "in": "header",
             "type": "string"
           }
         ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/users/sign_up": {
+      "post": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/users/sign_in": {
+      "post": {
+        "description": "",
         "responses": {
           "default": {
             "description": ""

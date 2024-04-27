@@ -3,13 +3,18 @@ const dayjs = require("dayjs");
 const tools = require("../utils/tools");
 const appError = require("../utils/appError");
 const handleSuccess = require("../utils/handleSuccess"); // 引入自訂的成功處理工具
+const validator = require("validator");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const {isAuth,generateSendJWT} = require('../utils/auth');
 const User = require("../models/user"); // 引入 Post 模型
 const { Post, Comment } = require("../models/post");
+const dotenv = require("dotenv");
+dotenv.config({ path: "./config.env" });
 
 const usersController = {
   // 取得全部使用者
   getUsers: async function (req, res, next) {
-
     const user = await User.find(); // 查詢所有資料
     handleSuccess(res, user, "取得所有資料成功");
   },
@@ -17,13 +22,14 @@ const usersController = {
   // 獲取特定使用者
   getUser: async function (req, res, next) {
 
-    // 檢查 ID 格式及是否存在
-    const isIdExist = await tools.findModelByIdNext(User, req.params.id, next);
-    if (!isIdExist) {
-      return;
-    }
+    const id = req.user.id;
+    // // 檢查 ID 格式及是否存在
+    // const isIdExist = await tools.findModelByIdNext(User, id, next);
+    // if (!isIdExist) {
+    //   return;
+    // }
 
-    const user = await User.findById(req.params.id).select(
+    const user = await User.findById(id).select(
       "-createdAt -updatedAt -email "
     );
 
@@ -36,12 +42,10 @@ const usersController = {
 
   // 新增一位使用者
   createUser: async function (req, res, next) {
-
     let data = req.body;
     data = tools.trimObjectAllValues(data);
 
     if (data) {
-
       // 定義及檢查數據是否包含所有必填欄位
       const requiredFields = ["name", "email", "password"];
       const { isValid, missingFields } = tools.checkRequiredFields(
@@ -89,14 +93,12 @@ const usersController = {
 
   // 刪除全部使用者資料
   deleteAllUsers: async function (req, res, next) {
-
     const data = await User.deleteMany({}); // 刪除全部資料
     handleSuccess(res, [], "刪除全部資料成功");
   },
 
   // 刪除指定 ID 使用者資料
   deleteUser: async function (req, res, next) {
-
     const id = req.params.id;
 
     const isIdExist = await tools.findModelByIdNext(User, id, next);
@@ -111,7 +113,6 @@ const usersController = {
 
   // 修改指定 ID 使用者資料
   updateUser: async function (req, res, next) {
-
     const id = req.params.id;
     let data = req.body;
 
@@ -138,7 +139,14 @@ const usersController = {
     }
 
     // 定義及提供的數據是否只包含了允許的欄位
-    const allowedFields = ["name", "gender", "email", "password", "birthday", "avatar"];
+    const allowedFields = [
+      "name",
+      "gender",
+      "email",
+      "password",
+      "birthday",
+      "avatar",
+    ];
     const invalidFieldsError = tools.validateFields(data, allowedFields);
     if (invalidFieldsError) {
       return next(appError(400, invalidFieldsError));
@@ -168,7 +176,6 @@ const usersController = {
 
   // 取得指定 ID 的使用者按讚文章資料
   getLikedPosts: async function (req, res, next) {
-
     const id = req.params.id;
 
     // 檢查 ID 格式及是否存在
@@ -180,18 +187,18 @@ const usersController = {
     // 使用 populate 方法來取回使用者資料及使用者追蹤清單
     // 並且在 following 欄位中的 userId 欄位取得對應的使用者名稱和頭像
     const user = await User.findById(id)
-    .populate({
-       path: "likedPosts",
-       select: "content image createdAt likes userId",
-       populate: {
-         path: "userId", // 填充 likedPosts 中的 userId 欄位
-         select: "avatar name", // 只取得這些欄位
-       }
-    })
-    .select("-createdAt -updatedAt");
+      .populate({
+        path: "likedPosts",
+        select: "content image createdAt likes userId",
+        populate: {
+          path: "userId", // 填充 likedPosts 中的 userId 欄位
+          select: "avatar name", // 只取得這些欄位
+        },
+      })
+      .select("-createdAt -updatedAt");
 
     if (!user) {
-        return next(appError(400, "使用者不存在"));
+      return next(appError(400, "使用者不存在"));
     }
 
     // 格式化 likedPosts 欄位中的 createdAt 日期
@@ -210,7 +217,6 @@ const usersController = {
 
   // 追蹤或取消追蹤用戶
   followUser: async function (req, res, next) {
-
     const { id } = req.params; // 獲取要追蹤或取消追蹤的用戶ID
     const userId = req.body.userId; // 獲取當前用戶ID
 
@@ -256,8 +262,9 @@ const usersController = {
 
   // 取得指定使用者 ID 的追蹤清單
   getFollows: async function (req, res, next) {
-
-    const id = req.params.id;
+    // const id = req.params.id;
+    console.log(req.user._id);
+    const id = req.user.id;
 
     // 檢查 ID 格式及是否存在
     const isIdExist = await tools.findModelByIdNext(User, id, next);
@@ -275,7 +282,7 @@ const usersController = {
       .select("-createdAt -updatedAt");
 
     if (!user) {
-        return next(appError(400, "使用者不存在"));
+      return next(appError(400, "使用者不存在"));
     }
 
     // 格式化 following 欄位中的 createdAt 日期
@@ -300,6 +307,65 @@ const usersController = {
     };
 
     handleSuccess(res, formattedUser, "取得單筆資料成功");
+  },
+
+  // todo 註冊
+  signUp: async function (req, res, next) {
+    let data = req.body;
+
+    // 使用 trimObjectValues 函數來去掉資料中所有值的空格
+    data = tools.trimObjectAllValues(data);
+
+    let { email, password, confirmPassword, name } = data;
+
+    // 內容不可為空
+    if (!email || !password || !confirmPassword || !name) {
+      return next(appError("400", "欄位未填寫正確！"));
+    }
+    // 密碼正確
+    if (password !== confirmPassword) {
+      return next(appError("400", "密碼不一致！"));
+    }
+    // 密碼 8 碼以上
+    if (!validator.isLength(password, { min: 8 })) {
+      return next(appError("400", "密碼字數低於 8 碼"));
+    }
+    // 是否為 Email
+    if (!validator.isEmail(email)) {
+      return next(appError("400", "Email 格式不正確"));
+    }
+
+    // 檢查 email 是否重複
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return next(appError(400, "該 email 已經被註冊"));
+    }
+
+    // 加密密碼
+    password = await bcrypt.hash(password, 12);
+    const newUser = await User.create({
+      email,
+      password,
+      name,
+    });
+
+    // 發送 JWT (註冊完直接登入)
+    // handleSuccess(res, newUser, "註冊成功");
+    generateSendJWT(newUser,201,res);
+  },
+
+  // todo 登入
+  signIn: async function (req, res, next) {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return next(appError( 400,'帳號密碼不可為空'));
+    }
+    const user = await User.findOne({ email }).select('+password');
+    const auth = await bcrypt.compare(password, user.password);
+    if(!auth){
+      return next(appError(400,'您的密碼不正確'));
+    }
+    generateSendJWT(user,200,res);
   },
 };
 
