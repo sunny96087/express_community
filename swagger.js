@@ -8,11 +8,12 @@ const doc = {
         title: "社群平台 API",
         description: "六角課程主線任務練習用 api"
     },
-    host: process.env.SWAGGER_HOST,
-    // host: "express-community.onrender.com",
-    // basePath: "/v1",
+    // 開發
+    // host: 'localhost:3666',
+    // 部署
+    host: "express-community.onrender.com",
     basePath: "/",
-    schemes: ['http', 'https'], // 確保使用 https 協議
+    schemes: ['http', 'https'],
     tags: [ // by default: empty Array
       {
         name: "Index",
