@@ -12,6 +12,33 @@ const { Post, Comment } = require("../models/post");
 const dotenv = require("dotenv");
 dotenv.config({ path: "./config.env" });
 
+const passport = require("passport");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_AUTH_CLIENTID,
+      clientSecret: process.env.GOOGLE_AUTH_CLIENT_SECRET,
+      callbackURL: "http://localhost:3666/users/google/callback",
+    },
+    async function (accessToken, refreshToken, profile, cb) {
+      console.log("測試");
+      console.log(profile);
+      try {
+        const user = await User.findOrCreate({
+          googleId: profile.id,
+          name: profile.displayName,
+          email: profile.emails[0].value,
+          avatar: profile.photos[0].value,
+        });
+        return cb(null, user);
+      } catch (err) {
+        return cb(err);
+      }
+    }
+  )
+);
+
 const usersController = {
   // 取得全部使用者
   getUsers: async function (req, res, next) {
@@ -352,11 +379,17 @@ const usersController = {
 
   // 確認 email 是否已註冊
   checkEmail: async function (req, res, next) {
-    const email = req.query.email;
+
+    const email = req.params.email; // undefined
+    console.log(email);
 
     const user = await User.findOne({ email });
 
-    if (user) {
+    console.log(user); // null
+
+    if (!user) {
+      handleSuccess(res, null, "該 email 可以使用");
+    } else {
       return next(appError(400, "該 email 已經被註冊"));
     }
   },
@@ -382,9 +415,8 @@ const usersController = {
     generateSendJWT(user, 200, res);
   },
 
-  // 更改密碼
+  // 重設密碼
   updatePassword: async function (req, res, next) {
-
     const { password, confirmPassword } = req.body;
 
     if (password !== confirmPassword) {
@@ -397,6 +429,22 @@ const usersController = {
     });
     generateSendJWT(user, 200, res, "更改密碼成功");
   },
+
+  // google 登入
+  googleCallback: async function (req, res, next) {
+    const user = await User.findById(req.user.id);
+    generateSendJWT(user, 200, res);
+    // 將用戶重定向回前端的主頁面
+    // return res.redirect('http://localhost:3000/'); 
+    // res.redirect('http://localhost:3000/');
+  },
 };
+// http://localhost:3666/users/google/callback
 
 module.exports = usersController;
+
+/**
+ * http://localhost:3666/users/google/callback?
+ * code=4%2F0AeaYSHCc3ZDtGARS44knJP2jS9tyLKA50AGHtFdVY8MDorynJUROwiPSx2soKnaXNthF5w
+ * &scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+openid&authuser=1&prompt=consent
+ */

@@ -142,47 +142,6 @@
             "description": ""
           }
         }
-      }
-    },
-    "/users/userOne": {
-      "get": {
-        "tags": [
-          "Users"
-        ],
-        "description": "取得指定 ID 使用者資料",
-        "parameters": [
-          {
-            "name": "token",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/users/{id}": {
-      "delete": {
-        "tags": [
-          "Users"
-        ],
-        "description": "刪除指定 ID 使用者資料",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
       },
       "patch": {
         "tags": [
@@ -191,9 +150,8 @@
         "description": "修改指定 ID 使用者資料",
         "parameters": [
           {
-            "name": "id",
-            "in": "path",
-            "required": true,
+            "name": "token",
+            "in": "header",
             "type": "string"
           },
           {
@@ -283,6 +241,47 @@
         }
       }
     },
+    "/users/userOne": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "取得指定 ID 使用者資料",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "description": "刪除指定 ID 使用者資料",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/users/likedPosts/{id}": {
       "get": {
         "tags": [
@@ -352,7 +351,7 @@
         }
       }
     },
-    "/users/followList": {
+    "/users/followList/{id}": {
       "get": {
         "tags": [
           "Users"
@@ -360,8 +359,9 @@
         "description": "取得指定使用者 ID 的追蹤清單",
         "parameters": [
           {
-            "name": "token",
-            "in": "header",
+            "name": "id",
+            "in": "path",
+            "required": true,
             "type": "string"
           }
         ],
@@ -374,7 +374,111 @@
     },
     "/users/sign_up": {
       "post": {
-        "description": "",
+        "tags": [
+          "Users"
+        ],
+        "description": "註冊成為使用者",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "名稱"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "password": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "密碼"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "confirmPassword": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "再次確認密碼"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "email": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "電子郵件"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/users/checkEmail/{email}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "確認 email 是否已註冊",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
         "responses": {
           "default": {
             "description": ""
@@ -384,7 +488,146 @@
     },
     "/users/sign_in": {
       "post": {
-        "description": "",
+        "tags": [
+          "Users"
+        ],
+        "description": "登入",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "帳號 (電子郵件)"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "password": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "密碼"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/users/updatePassword": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "description": "重設密碼",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "password": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "密碼"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "confirmPassword": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "再次確認密碼"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/users/google": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "google 登入",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/users/google/callback": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "google 登入後回傳資料",
         "responses": {
           "default": {
             "description": ""
@@ -432,29 +675,17 @@
         "description": "新增一篇文章",
         "parameters": [
           {
+            "name": "token",
+            "in": "header",
+            "type": "string"
+          },
+          {
             "name": "user",
             "in": "body",
             "required": true,
             "schema": {
               "type": "object",
               "properties": {
-                "userId": {
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "type": "string",
-                      "example": "string"
-                    },
-                    "description": {
-                      "type": "string",
-                      "example": "用戶 ID"
-                    },
-                    "required": {
-                      "type": "boolean",
-                      "example": true
-                    }
-                  }
-                },
                 "content": {
                   "type": "object",
                   "properties": {

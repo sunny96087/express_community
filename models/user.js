@@ -17,9 +17,10 @@ const userSchema = new mongoose.Schema(
       required: [true, "信箱未填寫"],
       unique: true, // 確保信箱是唯一的
     },
+    googleId: String,
     password: {
       type: String,
-      required: [true, "密碼未填寫"],
+      // required: [true, "密碼未填寫"],
       select: false,
     },
     birthday: {
@@ -54,6 +55,17 @@ const userSchema = new mongoose.Schema(
     timestamps: true, // 自動添加 createdAt 和 updatedAt 欄位
   }
 );
+
+// 判斷用戶 googleId 是否存在 ⇒ 決定要登入還是註冊
+userSchema.statics.findOrCreate = async function (doc) {
+  let result = await this.findOne({ googleId: doc.googleId });
+  if (result) {
+    return result;
+  } else {
+    result = new this(doc);
+    return await result.save();
+  }
+};
 
 // 創建使用者模型
 const User = mongoose.model("User", userSchema);

@@ -101,6 +101,12 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/posts", postsRouter);
 
+app.use((req, res, next) => {
+  // 設置 CSP 頭部
+  res.setHeader("Content-Security-Policy", "default-src 'none'; worker-src blob:;");
+  next();
+ });
+
 // 404 錯誤
 app.use(function (req, res, next) {
   // 使用 Winston 日誌器記錄 404 錯誤

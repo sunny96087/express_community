@@ -37,3 +37,7 @@ const endpointsFiles = ['./app.js',
 './controllers/postsController.js',]; // 要指向的 API，通常使用 Express 直接指向到 app.js 就可以
 
 swaggerAutogen(outputFile, endpointsFiles, doc); // swaggerAutogen 的方法
+
+// Demo
+// http://localhost:3666/v1
+// https://express-community.onrender.com/v1

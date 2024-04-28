@@ -5,6 +5,10 @@ const handleErrorAsync = require("../utils/handleErrorAsync");
 const usersController = require("../controllers/usersController");
 const { isAuth } = require("../utils/auth");
 
+const dotenv = require("dotenv");
+dotenv.config({ path: "./config.env" });
+const passport = require("passport");
+
 // 定義 GET 請求的路由，用於獲取所有資料
 router.get(
   "/",
@@ -192,7 +196,9 @@ router.post(
 );
 
 // 確認 email 是否已註冊
-router.get("/checkEmail/:email", handleErrorAsync(usersController.checkEmail)
+router.get(
+  "/checkEmail/:email",
+  handleErrorAsync(usersController.checkEmail)
   // #swagger.tags = ['Users']
   // #swagger.description = '確認 email 是否已註冊'
 );
@@ -229,6 +235,47 @@ router.post(
   "/updatePassword",
   isAuth,
   handleErrorAsync(usersController.updatePassword)
+  /** 
+    #swagger.tags = ['Users']
+    #swagger.description = '重設密碼'
+
+    #swagger.parameters['user'] = {
+        in: 'body',
+        required: true,
+        schema: {
+            password: {
+                type: 'string',
+                description: '密碼',
+                required: true
+            },
+            confirmPassword: {
+                type: 'string',
+                description: '再次確認密碼',
+                required: true
+            },
+        }
+    }
+    */
+);
+
+// google 登入
+router.get(
+  "/google",
+  passport.authenticate("google", {
+    scope: ["email", "profile"],
+  })
+  // #swagger.tags = ['Users']
+  // #swagger.description = 'google 登入'
+);
+
+// google 登入後回傳資料
+router.get(
+  "/google/callback",
+  passport.authenticate("google", { session: false }),
+  handleErrorAsync(usersController.googleCallback),
+
+  // #swagger.tags = ['Users']
+  // #swagger.description = 'google 登入後回傳資料'
 );
 
 module.exports = router;
