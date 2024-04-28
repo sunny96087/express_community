@@ -191,8 +191,16 @@ router.post(
     */
 );
 
+// 確認 email 是否已註冊
+router.get("/checkEmail/:email", handleErrorAsync(usersController.checkEmail)
+  // #swagger.tags = ['Users']
+  // #swagger.description = '確認 email 是否已註冊'
+);
+
 // 登入
-router.post("/sign_in", handleErrorAsync(usersController.signIn)
+router.post(
+  "/sign_in",
+  handleErrorAsync(usersController.signIn)
   /** 
     #swagger.tags = ['Users']
     #swagger.description = '登入'
@@ -214,6 +222,13 @@ router.post("/sign_in", handleErrorAsync(usersController.signIn)
         }
     }
     */
+);
+
+// 重設密碼
+router.post(
+  "/updatePassword",
+  isAuth,
+  handleErrorAsync(usersController.updatePassword)
 );
 
 module.exports = router;

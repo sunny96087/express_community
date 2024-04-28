@@ -6,7 +6,7 @@ const handleSuccess = require("../utils/handleSuccess"); // 引入自訂的成�
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const {isAuth,generateSendJWT} = require('../utils/auth');
+const { isAuth, generateSendJWT } = require("../utils/auth");
 const User = require("../models/user"); // 引入 Post 模型
 const { Post, Comment } = require("../models/post");
 const dotenv = require("dotenv");
@@ -21,7 +21,6 @@ const usersController = {
 
   // 獲取特定使用者
   getUser: async function (req, res, next) {
-
     const id = req.user.id;
 
     const user = await User.findById(id).select(
@@ -346,16 +345,27 @@ const usersController = {
 
     // 註冊成功，不登入
     // handleSuccess(res, newUser, "註冊成功");
-    
+
     // 發送 JWT (註冊完直接登入)
-    generateSendJWT(newUser,201,res);
+    generateSendJWT(newUser, 201, res);
+  },
+
+  // 確認 email 是否已註冊
+  checkEmail: async function (req, res, next) {
+    const email = req.query.email;
+
+    const user = await User.findOne({ email });
+
+    if (user) {
+      return next(appError(400, "該 email 已經被註冊"));
+    }
   },
 
   // 登入
   signIn: async function (req, res, next) {
     const { email, password } = req.body;
     if (!email || !password) {
-      return next(appError( 400,'帳號密碼不可為空'));
+      return next(appError(400, "帳號密碼不可為空"));
     }
 
     // 檢查 email 是否存在
@@ -363,13 +373,29 @@ const usersController = {
     if (!existingUser) {
       return next(appError(400, "帳號不存在"));
     }
-    
-    const user = await User.findOne({ email }).select('+password');
+
+    const user = await User.findOne({ email }).select("+password");
     const auth = await bcrypt.compare(password, user.password);
-    if(!auth){
-      return next(appError(400,'您的密碼不正確'));
+    if (!auth) {
+      return next(appError(400, "您的密碼不正確"));
     }
-    generateSendJWT(user,200,res);
+    generateSendJWT(user, 200, res);
+  },
+
+  // 更改密碼
+  updatePassword: async function (req, res, next) {
+
+    const { password, confirmPassword } = req.body;
+
+    if (password !== confirmPassword) {
+      return next(appError("400", "密碼不一致！"));
+    }
+    let newPassword = await bcrypt.hash(password, 12);
+
+    const user = await User.findByIdAndUpdate(req.user.id, {
+      password: newPassword,
+    });
+    generateSendJWT(user, 200, res, "更改密碼成功");
   },
 };
 

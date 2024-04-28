@@ -9,21 +9,20 @@ dotenv.config({ path: "./config.env" });
 const isAuth = handleErrorAsync(async (req, res, next) => {
   // 確認 token 是否存在
   let token;
-//   if (
-//     req.headers.authorization &&
-//     req.headers.authorization.startsWith("Bearer")
-//   ) {
-//     token = req.headers.authorization.split(" ")[1];
-//   }
+  //   if (
+  //     req.headers.authorization &&
+  //     req.headers.authorization.startsWith("Bearer")
+  //   ) {
+  //     token = req.headers.authorization.split(" ")[1];
+  //   }
 
   if (req.headers.token) {
-      token = `${req.headers.token}`
-    } else {
-      return next(appError(401, "你尚未登入！"));
+    token = `${req.headers.token}`;
+  } else {
+    return next(appError(401, "你尚未登入！"));
   }
 
-//   console.log(token);
-
+  //   console.log(token);
 
   // 驗證 token 正確性
   const decoded = await new Promise((resolve, reject) => {
@@ -39,11 +38,10 @@ const isAuth = handleErrorAsync(async (req, res, next) => {
   const currentUser = await User.findById(decoded.id);
 
   req.user = currentUser;
-  console.log(req.user);
-  console.log(req.user._id);
+  // console.log(req.user);
   next();
 });
-const generateSendJWT = (user, statusCode, res) => {
+const generateSendJWT = (user, statusCode, res, message) => {
   // 產生 JWT token＿＿＿＿＿＿＿＿＿＿＿＿使用 JWT_SECRET 混淆
   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
     // 設定 token 過期時間
@@ -59,6 +57,7 @@ const generateSendJWT = (user, statusCode, res) => {
       email: user.email,
       id: user._id,
     },
+    message,
   });
 };
 
