@@ -61,6 +61,21 @@ const usersController = {
     }
   },
 
+    // 獲取特定使用者 公開資料
+    getUserOpen: async function (req, res, next) {
+      const id = req.params.id;
+  
+      const user = await User.findById(id).select(
+        "-createdAt -updatedAt -email "
+      );
+  
+      if (user) {
+        handleSuccess(res, user, "取得單筆資料成功");
+      } else {
+        return next(appError(400, "找不到該使用者資料"));
+      }
+    },
+
   // 新增一位使用者
   createUser: async function (req, res, next) {
     let data = req.body;
@@ -284,8 +299,8 @@ const usersController = {
 
   // 取得指定使用者 ID 的追蹤清單
   getFollows: async function (req, res, next) {
-    const id = req.params.id;
-    // const id = req.user.id;
+    // const id = req.params.id;
+    const id = req.user.id;
 
     // 檢查 ID 格式及是否存在
     const isIdExist = await tools.findModelByIdNext(User, id, next);

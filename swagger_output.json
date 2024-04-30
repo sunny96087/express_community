@@ -5,7 +5,7 @@
     "title": "社群平台 API",
     "description": "六角課程主線任務練習用 api"
   },
-  "host": "express-community.onrender.com",
+  "host": "localhost:3666",
   "basePath": "/",
   "tags": [
     {
@@ -26,6 +26,7 @@
     }
   ],
   "schemes": [
+    "http",
     "https"
   ],
   "paths": {

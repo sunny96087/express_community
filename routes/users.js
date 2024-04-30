@@ -31,6 +31,16 @@ router.get(
   */
 );
 
+// 獲取特定使用者 公開資料
+router.get(
+  "/userOneOpen/:id",
+  handleErrorAsync(usersController.getUserOpen)
+  /*
+    #swagger.tags = ['Users']
+    #swagger.description = '取得指定 ID 使用者資料' 
+  */
+);
+
 // 新增一位使用者
 router.post(
   "/",
@@ -152,7 +162,8 @@ router.patch(
 
 // 取得指定使用者 ID 的追蹤清單
 router.get(
-  "/followList/:id",
+  "/followList",
+  isAuth,
   handleErrorAsync(usersController.getFollows)
   // #swagger.tags = ['Users']
   // #swagger.description = '取得指定使用者 ID 的追蹤清單'
