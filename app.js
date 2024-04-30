@@ -59,6 +59,7 @@ mongoose
 // 引入自訂路由 routes
 const postsRouter = require("./routes/posts");
 var usersRouter = require("./routes/users");
+const uploadRouter = require('./routes/upload');
 
 // 預設首頁
 var indexRouter = require("./routes/index");
@@ -100,6 +101,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/posts", postsRouter);
+app.use('/upload', uploadRouter);
 
 app.use((req, res, next) => {
   // 設置 CSP 頭部

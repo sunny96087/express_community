@@ -5,7 +5,7 @@
     "title": "社群平台 API",
     "description": "六角課程主線任務練習用 api"
   },
-  "host": "express-community.onrender.com",
+  "host": "localhost:3666",
   "basePath": "/",
   "tags": [
     {
@@ -19,9 +19,14 @@
     {
       "name": "Posts",
       "description": "文章"
+    },
+    {
+      "name": "Upload",
+      "description": "上傳圖片"
     }
   ],
   "schemes": [
+    "http",
     "https"
   ],
   "paths": {
@@ -44,13 +49,6 @@
           "Users"
         ],
         "description": "取得所有使用者資料",
-        "parameters": [
-          {
-            "name": "token",
-            "in": "header",
-            "type": "string"
-          }
-        ],
         "responses": {
           "default": {
             "description": ""
@@ -944,6 +942,98 @@
             "type": "string"
           }
         ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/upload/image": {
+      "post": {
+        "tags": [
+          "Upload"
+        ],
+        "description": "上傳圖片",
+        "parameters": [
+          {
+            "name": "upload",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "file": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "file"
+                    },
+                    "format": {
+                      "type": "string",
+                      "example": "binary"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "圖片檔案"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Upload"
+        ],
+        "description": "刪除圖片",
+        "parameters": [
+          {
+            "name": "fileName",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "圖片檔案名稱"
+                },
+                "required": {
+                  "type": "boolean",
+                  "example": true
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Upload"
+        ],
+        "description": "獲取所有圖片列表",
         "responses": {
           "default": {
             "description": ""

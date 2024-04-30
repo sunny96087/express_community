@@ -12,7 +12,7 @@ const passport = require("passport");
 // 定義 GET 請求的路由，用於獲取所有資料
 router.get(
   "/",
-  isAuth,
+  // isAuth,
   handleErrorAsync(usersController.getUsers)
   /* 	
     #swagger.tags = ['Users']

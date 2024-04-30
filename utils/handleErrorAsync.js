@@ -1,3 +1,5 @@
+// utils / handleErrorAsync.js
+
 const handleErrorAsync = function handleErrorAsync(func) {
     // func 先將 async fun 帶入參數儲存
     // middleware 先接住 router 資料
