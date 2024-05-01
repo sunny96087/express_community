@@ -45,7 +45,7 @@ const postsController = {
       populate: [
         {
           path: "userId", // 連接的欄位
-          select: "name avatar", // 只要這些欄位
+          select: "name avatar id", // 只要這些欄位
         },
         {
           path: "comments",

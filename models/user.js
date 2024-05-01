@@ -37,7 +37,7 @@ const userSchema = new mongoose.Schema(
         ref: "Post",
       },
     ],
-    following: [
+    following: [ // 我追蹤的用戶
       {
         userId: {
           type: mongoose.Schema.Types.ObjectId,
@@ -49,6 +49,18 @@ const userSchema = new mongoose.Schema(
         },
       },
     ],
+    followers: [ // 追蹤我的用戶
+    {
+      userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+      createdAt: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
   },
   {
     versionKey: false, // 禁用 __v 欄位

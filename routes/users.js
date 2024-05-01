@@ -141,22 +141,11 @@ router.get(
 // 追蹤或取消追蹤用戶
 router.patch(
   "/follow/:id",
+  isAuth,
   handleErrorAsync(usersController.followUser)
   /** 
     #swagger.tags = ['Users']
     #swagger.description = '追蹤或取消追蹤指定 ID 的用戶'
-
-    #swagger.parameters['user'] = {
-        in: 'body',
-        required: true,
-        schema: {
-            userId: {
-                type: 'string',
-                description: '當前用戶ID',
-                required: true
-            }
-        }
-    }
     */
 );
 

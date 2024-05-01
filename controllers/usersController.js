@@ -61,20 +61,20 @@ const usersController = {
     }
   },
 
-    // 獲取特定使用者 公開資料
-    getUserOpen: async function (req, res, next) {
-      const id = req.params.id;
-  
-      const user = await User.findById(id).select(
-        "-createdAt -updatedAt -email "
-      );
-  
-      if (user) {
-        handleSuccess(res, user, "取得單筆資料成功");
-      } else {
-        return next(appError(400, "找不到該使用者資料"));
-      }
-    },
+  // 獲取特定使用者 公開資料
+  getUserOpen: async function (req, res, next) {
+    const id = req.params.id;
+
+    const user = await User.findById(id).select(
+      "-createdAt -updatedAt -email "
+    );
+
+    if (user) {
+      handleSuccess(res, user, "取得單筆資料成功");
+    } else {
+      return next(appError(400, "找不到該使用者資料"));
+    }
+  },
 
   // 新增一位使用者
   createUser: async function (req, res, next) {
@@ -255,7 +255,8 @@ const usersController = {
   // 追蹤或取消追蹤用戶
   followUser: async function (req, res, next) {
     const { id } = req.params; // 獲取要追蹤或取消追蹤的用戶ID
-    const userId = req.body.userId; // 獲取當前用戶ID
+    // const userId = req.body.userId; // 獲取當前用戶ID
+    const userId = req.user.id; // 從 token 中獲取當前用戶ID
 
     // 檢查 ID 格式及是否存在
     const isIdExist = await tools.findModelByIdNext(User, id, next);
@@ -286,12 +287,22 @@ const usersController = {
         { _id: userId },
         { $pull: { following: { userId: id } } }
       );
+      // 同時將當前用戶從該用戶的 followers 清單中移除
+      await User.updateOne(
+        { _id: id },
+        { $pull: { followers: { userId: userId } } }
+      );
       handleSuccess(res, null, "取消追蹤成功");
     } else {
       // 如果尚未追蹤，則追蹤
       await User.updateOne(
         { _id: userId },
         { $push: { following: { userId: id, createdAt: new Date() } } }
+      );
+      // 同時將當前用戶加入到該用戶的 followers 清單中
+      await User.updateOne(
+        { _id: id },
+        { $push: { followers: { userId: userId, createdAt: new Date() } } }
       );
       handleSuccess(res, null, "追蹤成功");
     }
@@ -336,6 +347,7 @@ const usersController = {
             userId: {
               name: follow.userId.name,
               avatar: follow.userId.avatar,
+              id: follow.userId._id,
             },
           };
         })
@@ -394,7 +406,6 @@ const usersController = {
 
   // 確認 email 是否已註冊
   checkEmail: async function (req, res, next) {
-
     const email = req.params.email; // undefined
     console.log(email);
 
@@ -450,7 +461,7 @@ const usersController = {
     const user = await User.findById(req.user.id);
     generateSendJWT(user, 200, res);
     // 將用戶重定向回前端的主頁面
-    // return res.redirect('http://localhost:3000/'); 
+    // return res.redirect('http://localhost:3000/');
     // res.redirect('http://localhost:3000/');
   },
 };
