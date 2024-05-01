@@ -56,6 +56,7 @@ const generateSendJWT = (user, statusCode, res, message) => {
       name: user.name,
       email: user.email,
       id: user._id,
+      avatar: user.avatar,
       // googleId: user.googleId,
       // url: 'http://localhost:3000/'
     },

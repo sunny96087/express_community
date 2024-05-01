@@ -5,7 +5,7 @@
     "title": "社群平台 API",
     "description": "六角課程主線任務練習用 api"
   },
-  "host": "localhost:3666",
+  "host": "express-community.onrender.com",
   "basePath": "/",
   "tags": [
     {
@@ -26,7 +26,6 @@
     }
   ],
   "schemes": [
-    "http",
     "https"
   ],
   "paths": {
@@ -258,6 +257,27 @@
         }
       }
     },
+    "/users/userOneOpen/{id}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "取得指定 ID 使用者資料",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/users/{id}": {
       "delete": {
         "tags": [
@@ -314,31 +334,9 @@
             "type": "string"
           },
           {
-            "name": "user",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "userId": {
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "type": "string",
-                      "example": "string"
-                    },
-                    "description": {
-                      "type": "string",
-                      "example": "當前用戶ID"
-                    },
-                    "required": {
-                      "type": "boolean",
-                      "example": true
-                    }
-                  }
-                }
-              }
-            }
+            "name": "token",
+            "in": "header",
+            "type": "string"
           }
         ],
         "responses": {
@@ -348,7 +346,7 @@
         }
       }
     },
-    "/users/followList/{id}": {
+    "/users/followList": {
       "get": {
         "tags": [
           "Users"
@@ -356,9 +354,8 @@
         "description": "取得指定使用者 ID 的追蹤清單",
         "parameters": [
           {
-            "name": "id",
-            "in": "path",
-            "required": true,
+            "name": "token",
+            "in": "header",
             "type": "string"
           }
         ],

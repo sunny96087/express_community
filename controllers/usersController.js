@@ -199,6 +199,7 @@ const usersController = {
         password: data.password,
         birthday: data.birthday,
         avatar: data.avatar,
+        gender: data.gender,
       },
       { new: true }
     );
