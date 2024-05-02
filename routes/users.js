@@ -258,6 +258,43 @@ router.post(
     */
 );
 
+// 管理員重設密碼
+router.post(
+  "/adminUpdatePassword",
+  handleErrorAsync(usersController.adminUpdatePassword)
+  /** 
+     #swagger.tags = ['Users']
+     #swagger.description = '管理員重設密碼'
+ 
+     #swagger.parameters['admin'] = {
+         in: 'body',
+         required: true,
+         schema: {
+             adminPassword: {
+                 type: 'string',
+                 description: '管理員密碼',
+                 required: true
+             },
+             userId: {
+                 type: 'string',
+                 description: '用戶ID',
+                 required: true
+             },
+             newPassword: {
+                 type: 'string',
+                 description: '新密碼',
+                 required: true
+             },
+             confirmPassword: {
+                 type: 'string',
+                 description: '再次確認新密碼',
+                 required: true
+             },
+         }
+     }
+     */
+);
+
 // google 登入
 router.get(
   "/google",
@@ -272,7 +309,7 @@ router.get(
 router.get(
   "/google/callback",
   passport.authenticate("google", { session: false }),
-  handleErrorAsync(usersController.googleCallback),
+  handleErrorAsync(usersController.googleCallback)
 
   // #swagger.tags = ['Users']
   // #swagger.description = 'google 登入後回傳資料'

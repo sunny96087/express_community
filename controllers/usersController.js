@@ -142,7 +142,32 @@ const usersController = {
       return;
     }
 
-    await User.findByIdAndDelete(id); // 刪除指定 ID 的資料
+    // 找到這個用戶的所有文章
+    const userPosts = await Post.find({ userId: id });
+
+    // 從所有相關用戶的 likedPosts 列表中移除這些文章的 ID
+    await User.updateMany(
+      { likedPosts: { $in: userPosts.map((post) => post._id) } },
+      { $pull: { likedPosts: { $in: userPosts.map((post) => post._id) } } }
+    );
+
+    // 刪除用戶的文章
+    await Post.deleteMany({ userId: id });
+
+    // 從其他用戶的追蹤列表中移除這個用戶
+    await User.updateMany(
+      { following: { $elemMatch: { userId: id } } },
+      { $pull: { following: { userId: id } } }
+    );
+
+    // 從其他用戶的追蹤者列表中移除這個用戶
+    await User.updateMany(
+      { followers: { $elemMatch: { userId: id } } },
+      { $pull: { followers: { userId: id } } }
+    );
+
+    // 刪除用戶本身
+    await User.findByIdAndDelete(id);
 
     handleSuccess(res, null, "刪除單筆資料成功");
   },
@@ -455,6 +480,35 @@ const usersController = {
       password: newPassword,
     });
     generateSendJWT(user, 200, res, "更改密碼成功");
+  },
+
+  // 管理員重設密碼
+  adminUpdatePassword: async function (req, res, next) {
+    const { adminPassword, userId, newPassword, confirmPassword } = req.body;
+
+    // 這裡應該檢查管理員密碼是否正確
+    // 這只是一個示例，實際上你應該從環境變量或配置文件中獲取管理員密碼
+    const correctAdminPassword = process.env.ADMIN_PASSWORD;
+
+    if (adminPassword !== correctAdminPassword) {
+      return next(appError("401", "管理員密碼錯誤！"));
+    }
+
+    if (newPassword !== confirmPassword) {
+      return next(appError("400", "密碼不一致！"));
+    }
+
+    let hashedPassword = await bcrypt.hash(newPassword, 12);
+
+    const user = await User.findByIdAndUpdate(userId, {
+      password: hashedPassword,
+    });
+
+    if (!user) {
+      return next(appError("404", "用戶不存在！"));
+    }
+
+    handleSuccess(res, null, "更改密碼成功");
   },
 
   // google 登入

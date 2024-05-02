@@ -5,7 +5,7 @@
     "title": "社群平台 API",
     "description": "六角課程主線任務練習用 api"
   },
-  "host": "express-community.onrender.com",
+  "host": "localhost:3666",
   "basePath": "/",
   "tags": [
     {
@@ -26,6 +26,7 @@
     }
   ],
   "schemes": [
+    "http",
     "https"
   ],
   "paths": {
@@ -585,6 +586,99 @@
                     "description": {
                       "type": "string",
                       "example": "再次確認密碼"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/users/adminUpdatePassword": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "description": "管理員重設密碼",
+        "parameters": [
+          {
+            "name": "admin",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "adminPassword": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "管理員密碼"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "userId": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "用戶ID"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "newPassword": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "新密碼"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "confirmPassword": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "再次確認新密碼"
                     },
                     "required": {
                       "type": "boolean",

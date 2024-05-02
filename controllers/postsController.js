@@ -144,8 +144,16 @@ const postsController = {
 
   // 刪除所有文章
   deleteAllPosts: async (req, res, next) => {
+    // 刪除所有文章
     const data = await Post.deleteMany({});
-    handleSuccess(res, [], "刪除全部資料成功");
+
+    // 從所有用戶的 likedPosts 列表中移除所有文章的 ID
+    // 這裡假設所有文章的 ID 都已經被刪除，所以我們可以直接清空 likedPosts 列表
+    await User.updateMany(
+      {}, // 空的查詢條件表示更新所有文檔
+      { $set: { likedPosts: [] } } // 將 likedPosts 設置為空陣列
+    );
+    handleSuccess(res, [], "刪除全部文章成功，用戶按讚紀錄也一併移除");
   },
 
   // 刪除單筆文章
@@ -157,6 +165,12 @@ const postsController = {
     if (!isIdExist) {
       return;
     }
+
+    // 從所有相關用戶的 likedPosts 列表中移除這篇文章的 ID
+    await User.updateMany(
+      { likedPosts: { $elemMatch: { $eq: id } } },
+      { $pull: { likedPosts: id } }
+    );
 
     await Post.findByIdAndDelete(id);
     handleSuccess(res, null, "刪除單筆資料成功");
