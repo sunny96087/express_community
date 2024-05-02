@@ -9,11 +9,11 @@ const doc = {
         description: "六角課程主線任務練習用 api"
     },
     // * 開發
-    host: 'localhost:3666',
-    schemes: ['http', 'https'],
+    // host: 'localhost:3666',
+    // schemes: ['http', 'https'],
     // * 部署
-    // host: "express-community.onrender.com",
-    // schemes: ['https'],
+    host: "express-community.onrender.com",
+    schemes: ['https'],
     basePath: "/",
     tags: [ // by default: empty Array
       {

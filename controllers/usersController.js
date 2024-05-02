@@ -129,7 +129,16 @@ const usersController = {
 
   // 刪除全部使用者資料
   deleteAllUsers: async function (req, res, next) {
-    const data = await User.deleteMany({}); // 刪除全部資料
+    // 刪除所有文章
+    await Post.deleteMany({});
+
+    // 刪除所有評論
+    // 假設你有一個 Comment 模型，並且每個評論都有一個參考 Post 的欄位
+    await Comment.deleteMany({});
+
+    // 刪除所有使用者
+    const data = await User.deleteMany({});
+
     handleSuccess(res, [], "刪除全部資料成功");
   },
 
@@ -153,6 +162,12 @@ const usersController = {
 
     // 刪除用戶的文章
     await Post.deleteMany({ userId: id });
+
+    // 刪除這些文章的所有留言
+    // 假設你有一個 Comment 模型，並且每個留言都有一個參考 Post 的欄位
+    await Comment.deleteMany({
+      postId: { $in: userPosts.map((post) => post._id) },
+    });
 
     // 從其他用戶的追蹤列表中移除這個用戶
     await User.updateMany(
