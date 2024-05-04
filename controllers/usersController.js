@@ -497,7 +497,7 @@ const usersController = {
       password,
       name,
       emailVerificationToken: token,
-      emailVerificationTokenExpires: Date.now() + 3600000, // 1 小時後過期
+      emailVerificationTokenExpires: new Date(Date.now() + 3600000), // 1 小時後過期
     });
 
     // 讓 Google 驗證專案
@@ -537,7 +537,11 @@ const usersController = {
     await transporter.sendMail(mailOptions);
 
     // 回應註冊成功，但不直接登入
-    handleSuccess(res, null, "註冊成功，請於一小時內至填寫的電子信箱驗證郵件。");
+    handleSuccess(
+      res,
+      null,
+      "註冊成功，請於一小時內至填寫的電子信箱驗證郵件。"
+    );
   },
 
   // 確認 email 是否已註冊

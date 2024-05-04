@@ -17,11 +17,11 @@ var cookieParser = require("cookie-parser"); // 引入 cookie-parser 中間件�
 var morgan = require("morgan"); // 引入 morgan 中間件，用於日誌記錄
 var cors = require("cors"); // 引入允許跨網域套件 cors
 const logger = require("./logger"); // 引入 logger.js => Winston 日誌
+const deleteExpiredAccounts = require("./utils/cronJobs"); // 引入 cronJobs.js 定時任務
 
 // swagger
 const swaggerUi = require("swagger-ui-express");
 const swaggerFile = require("./swagger_output.json");
-
 
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
@@ -53,13 +53,16 @@ mongoose
   .connect(DB)
   .then(() => console.log("資料庫連接成功"))
   .catch((err) => {
-    console.log(err);
+    console.log("MongoDB 連接失敗:", err);
   });
+
+// 啟動定時任務
+deleteExpiredAccounts();
 
 // 引入自訂路由 routes
 const postsRouter = require("./routes/posts");
 var usersRouter = require("./routes/users");
-const uploadRouter = require('./routes/upload');
+const uploadRouter = require("./routes/upload");
 const emailRouter = require("./routes/email");
 
 // 預設首頁
@@ -102,14 +105,17 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/posts", postsRouter);
-app.use('/upload', uploadRouter);
-app.use('/email', emailRouter);
+app.use("/upload", uploadRouter);
+app.use("/email", emailRouter);
 
 app.use((req, res, next) => {
   // 設置 CSP 頭部
-  res.setHeader("Content-Security-Policy", "default-src 'none'; worker-src blob:;");
+  res.setHeader(
+    "Content-Security-Policy",
+    "default-src 'none'; worker-src blob:;"
+  );
   next();
- });
+});
 
 // 404 錯誤
 app.use(function (req, res, next) {
@@ -117,11 +123,11 @@ app.use(function (req, res, next) {
   logger.warn(`路由不存在: ${req.originalUrl}`);
   // 回應一個包含錯誤訊息的 JSON 對象
   res.status(404).json({
-     status: "error",
-     message: "無此路由資訊",
-     path: req.originalUrl, // 提供更多的上下文信息
+    status: "error",
+    message: "無此路由資訊",
+    path: req.originalUrl, // 提供更多的上下文信息
   });
- });
+});
 
 // express 錯誤處理
 // ? 自己設定的錯誤處理

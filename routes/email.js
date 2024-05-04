@@ -15,8 +15,7 @@ router.post(
 
 // 處理註冊電子郵件驗證用的路由
 router.get(
-  "/verify-email",
-  handleErrorAsync(emailController.verifyEmail)
+  "/verify-email",emailController.verifyEmail
   // #swagger.tags = ['Email']
   // #swagger.description = '處理註冊電子郵件驗證用的路由'
 );
