@@ -88,8 +88,8 @@ const emailController = {
           <head>
             <title>驗證成功</title>
           </head>
-          <body style="background-color: #F0ECE8; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                <div style="text-align: left;>
+          <body style="background-color: #F0ECE8; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
+                <div style="text-align: left;">
                     <p style="font-size: 24px; margin-bottom: 20px;">您的電子郵件地址已成功驗證！</p>
                     <button onclick="goToHomePage()" style="background-color: #04438D; color: white; padding: 12px 24px; border: 2px solid #000400; border-radius: .5rem; font-size: 20px; cursor: pointer;box-shadow: -2px 2px #000400;font-weight: 700;">回網站登入</button>
                 </div> 
