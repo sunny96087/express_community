@@ -66,9 +66,14 @@ const userSchema = new mongoose.Schema(
     emailVerified: {
       type: Boolean,
       default: false,
+    }, // 是否有驗證信箱
+    emailVerificationToken: String, // 信箱驗證 token
+    emailVerificationTokenExpires: Date, // 信箱驗證 token 過期時間
+    isAdmin: {
+      // 管理員
+      type: Boolean,
+      default: false,
     },
-    emailVerificationToken: String,
-    emailVerificationTokenExpires: Date,
   },
   {
     versionKey: false, // 禁用 __v 欄位
