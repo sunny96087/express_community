@@ -11,6 +11,10 @@ const User = require("../models/user"); // 引入 Post 模型
 const { Post, Comment } = require("../models/post");
 const dotenv = require("dotenv");
 dotenv.config({ path: "./config.env" });
+const crypto = require("crypto");
+const nodemailer = require("nodemailer");
+const { google } = require("googleapis");
+const OAuth2 = google.auth.OAuth2;
 
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
@@ -445,6 +449,97 @@ const usersController = {
     generateSendJWT(newUser, 201, res);
   },
 
+  // 新增的註冊方法，包括電子郵件驗證
+  signUpWithEmailVerification: async function (req, res, next) {
+    let data = req.body;
+
+    // 使用 trimObjectValues 函數來去掉資料中所有值的空格
+    data = tools.trimObjectAllValues(data);
+
+    let { email, password, confirmPassword, name } = data;
+
+    // 內容不可為空
+    if (!email || !password || !confirmPassword || !name) {
+      return next(appError("400", "欄位未填寫正確！"));
+    }
+    // 密碼正確
+    if (password !== confirmPassword) {
+      return next(appError("400", "密碼不一致！"));
+    }
+    // 密碼 8 碼以上
+    if (!validator.isLength(password, { min: 8 })) {
+      return next(appError("400", "密碼字數低於 8 碼"));
+    }
+    // 是否為 Email
+    if (!validator.isEmail(email)) {
+      return next(appError("400", "Email 格式不正確"));
+    }
+
+    // 檢查 email 是否重複
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return next(appError(400, "該 email 已經被註冊"));
+    }
+
+    // 加密密碼
+    password = await bcrypt.hash(password, 12);
+
+    // 生成驗證標識符
+    const token = crypto.randomBytes(20).toString("hex");
+    // * dev
+    // const verificationUrl = `http://localhost:3666/email/verify-email?token=${token}`;
+    // * prod
+    const verificationUrl = `https://express-community.onrender.com/email/verify-email?token=${token}`;
+
+    // 創建新用戶並儲存驗證標識符
+    const newUser = await User.create({
+      email,
+      password,
+      name,
+      emailVerificationToken: token,
+      emailVerificationTokenExpires: Date.now() + 3600000, // 1 小時後過期
+    });
+
+    // 讓 Google 驗證專案
+    const oauth2Client = new OAuth2(
+      process.env.GOOGLE_AUTH_CLIENTID,
+      process.env.GOOGLE_AUTH_CLIENT_SECRET,
+      "https://developers.google.com/oauthplayground"
+    );
+
+    oauth2Client.setCredentials({
+      refresh_token: process.env.GOOGLE_AUTH_REFRESH_TOKEN,
+    });
+
+    // 取得 一次性的 access token
+    const accessToken = oauth2Client.getAccessToken();
+
+    let transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        type: "OAuth2",
+        user: "yu13142013@gmail.com",
+        clientId: process.env.GOOGLE_AUTH_CLIENTID,
+        clientSecret: process.env.GOOGLE_AUTH_CLIENT_SECRET,
+        refreshToken: process.env.GOOGLE_AUTH_REFRESH_TOKEN,
+        accessToken: accessToken,
+      },
+    });
+
+    // 發送驗證郵件
+    const mailOptions = {
+      from: "雀特 Chat! - 社群網站 <yu13142013@gmail.com>",
+      to: email,
+      subject: "請驗證您的電子郵件地址",
+      text: `請點擊以下鏈接來驗證您的電子郵件地址：\n\n${verificationUrl}\n\n如果您沒有註冊，請忽略此郵件。`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    // 回應註冊成功，但不直接登入
+    handleSuccess(res, null, "註冊成功，請於一小時內至填寫的電子信箱驗證郵件。");
+  },
+
   // 確認 email 是否已註冊
   checkEmail: async function (req, res, next) {
     const email = req.params.email; // undefined
@@ -472,6 +567,11 @@ const usersController = {
     const existingUser = await User.findOne({ email });
     if (!existingUser) {
       return next(appError(400, "帳號不存在"));
+    }
+
+    // 檢查用戶是否已經驗證了他們的電子郵件地址
+    if (!existingUser.emailVerified) {
+      return next(appError(400, "請先驗證您的電子郵件"));
     }
 
     const user = await User.findOne({ email }).select("+password");

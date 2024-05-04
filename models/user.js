@@ -37,7 +37,8 @@ const userSchema = new mongoose.Schema(
         ref: "Post",
       },
     ],
-    following: [ // 我追蹤的用戶
+    following: [
+      // 我追蹤的用戶
       {
         userId: {
           type: mongoose.Schema.Types.ObjectId,
@@ -49,18 +50,25 @@ const userSchema = new mongoose.Schema(
         },
       },
     ],
-    followers: [ // 追蹤我的用戶
-    {
-      userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+    followers: [
+      // 追蹤我的用戶
+      {
+        userId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
       },
-      createdAt: {
-        type: Date,
-        default: Date.now,
-      },
+    ],
+    emailVerified: {
+      type: Boolean,
+      default: false,
     },
-  ],
+    emailVerificationToken: String,
+    emailVerificationTokenExpires: Date,
   },
   {
     versionKey: false, // 禁用 __v 欄位

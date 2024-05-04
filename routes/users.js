@@ -3,6 +3,7 @@ const router = express.Router(); // 創建一個路由器實例
 const handleErrorAsync = require("../utils/handleErrorAsync");
 
 const usersController = require("../controllers/usersController");
+const emailController = require("../controllers/emailController");
 const { isAuth } = require("../utils/auth");
 
 const dotenv = require("dotenv");
@@ -194,6 +195,44 @@ router.post(
     }
     */
 );
+
+// 註冊路由，包括電子郵件驗證
+router.post(
+  "/signup-with-email-verification",
+  handleErrorAsync(usersController.signUpWithEmailVerification)
+  /** 
+    #swagger.tags = ['Users']
+    #swagger.description = '註冊成為使用者 - 要驗證電子郵件'
+
+    #swagger.parameters['user'] = {
+        in: 'body',
+        required: true,
+        schema: {
+            name: {
+                type: 'string',
+                description: '名稱',
+                required: true
+            },
+            password: {
+                type: 'string',
+                description: '密碼',
+                required: true
+            },
+            confirmPassword: {
+                type: 'string',
+                description: '再次確認密碼',
+                required: true
+            },
+            email: {
+                type: 'string',
+                description: '電子郵件',
+                required: true
+            }
+        }
+    }
+    */
+);
+
 
 // 確認 email 是否已註冊
 router.get(

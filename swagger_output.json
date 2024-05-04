@@ -5,7 +5,7 @@
     "title": "社群平台 API",
     "description": "六角課程主線任務練習用 api"
   },
-  "host": "localhost:3666",
+  "host": "express-community.onrender.com",
   "basePath": "/",
   "tags": [
     {
@@ -23,10 +23,13 @@
     {
       "name": "Upload",
       "description": "上傳圖片"
+    },
+    {
+      "name": "Email",
+      "description": "信箱驗證"
     }
   ],
   "schemes": [
-    "http",
     "https"
   ],
   "paths": {
@@ -373,6 +376,99 @@
           "Users"
         ],
         "description": "註冊成為使用者",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "名稱"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "password": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "密碼"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "confirmPassword": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "再次確認密碼"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "email": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "電子郵件"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/users/signup-with-email-verification": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "description": "註冊成為使用者 - 要驗證電子郵件",
         "parameters": [
           {
             "name": "user",
@@ -1125,6 +1221,52 @@
           "Upload"
         ],
         "description": "獲取所有圖片列表",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/email/personalMail": {
+      "post": {
+        "tags": [
+          "Email"
+        ],
+        "description": "發送信件測試",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "to": {
+                  "example": "any"
+                },
+                "subject": {
+                  "example": "any"
+                },
+                "text": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/email/verify-email": {
+      "get": {
+        "tags": [
+          "Email"
+        ],
+        "description": "處理註冊電子郵件驗證用的路由",
         "responses": {
           "default": {
             "description": ""

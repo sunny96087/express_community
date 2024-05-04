@@ -9,11 +9,11 @@ const doc = {
         description: "六角課程主線任務練習用 api"
     },
     // * 開發
-    host: 'localhost:3666',
-    schemes: ['http', 'https'],
+    // host: 'localhost:3666',
+    // schemes: ['http', 'https'],
     // * 部署
-    // host: "express-community.onrender.com",
-    // schemes: ['https'],
+    host: "express-community.onrender.com",
+    schemes: ['https'],
     basePath: "/",
     tags: [ // by default: empty Array
       {
@@ -32,6 +32,10 @@ const doc = {
         name: "Upload",
         description: "上傳圖片"
       },
+      {
+        name: "Email",
+        description: "信箱驗證"
+      },
     ],
 }
 
@@ -39,7 +43,8 @@ const outputFile = './swagger_output.json'; // 輸出的文件名稱
 const endpointsFiles = ['./app.js',
 './controllers/usersController.js',
 './controllers/postsController.js',
-'./controllers/uploadController.js']; // 要指向的 API，通常使用 Express 直接指向到 app.js 就可以
+'./controllers/uploadController.js',
+'./controllers/emailController.js']; // 要指向的 API，通常使用 Express 直接指向到 app.js 就可以
 
 swaggerAutogen(outputFile, endpointsFiles, doc); // swaggerAutogen 的方法
 
