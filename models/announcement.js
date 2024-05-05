@@ -40,6 +40,9 @@ const announcementSchema = new mongoose.Schema(
   }
 );
 
+// 文本索引
+announcementSchema.index({ title: 'text', content: 'text' });
+
 const Announcement = mongoose.model("Announcement", announcementSchema);
 
 module.exports = Announcement;

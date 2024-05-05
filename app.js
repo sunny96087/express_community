@@ -64,6 +64,7 @@ const postsRouter = require("./routes/posts");
 var usersRouter = require("./routes/users");
 const uploadRouter = require("./routes/upload");
 const emailRouter = require("./routes/email");
+const announcementsRouter = require("./routes/announcements");
 
 // 預設首頁
 var indexRouter = require("./routes/index");
@@ -107,6 +108,7 @@ app.use("/users", usersRouter);
 app.use("/posts", postsRouter);
 app.use("/upload", uploadRouter);
 app.use("/email", emailRouter);
+app.use("/announcements", announcementsRouter);
 
 app.use((req, res, next) => {
   // 設置 CSP 頭部

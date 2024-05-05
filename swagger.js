@@ -9,11 +9,11 @@ const doc = {
         description: "六角課程主線任務練習用 api"
     },
     // * 開發
-    host: 'localhost:3666',
-    schemes: ['http', 'https'],
+    // host: 'localhost:3666',
+    // schemes: ['http', 'https'],
     // * 部署
-    // host: "express-community.onrender.com",
-    // schemes: ['https'],
+    host: "express-community.onrender.com",
+    schemes: ['https'],
 
     basePath: "/",
     tags: [ // by default: empty Array
@@ -46,7 +46,7 @@ const endpointsFiles = ['./app.js',
 './controllers/postsController.js',
 './controllers/uploadController.js',
 './controllers/emailController.js',
-'./controllers/announcementsController.js']; // 要指向的 API，通常使用 Express 直接指向到 app.js 就可以
+'./controllers/announcementController.js']; // 要指向的 API，通常使用 Express 直接指向到 app.js 就可以
 
 swaggerAutogen(outputFile, endpointsFiles, doc); // swaggerAutogen 的方法
 
