@@ -40,13 +40,47 @@ const announcementController = {
     // 從 token 拿 isAdmin
     const isAdmin = req.user.isAdmin;
     if (!isAdmin) {
-      return next(appError(400, "您沒有權限新增公告"));
+      return next(appError(401, "您沒有權限查看後台公告"));
     }
 
-    const announcements = await Announcement.find().populate(
-      "user",
-      "name avatar"
-    );
+    // 從請求中獲取參數
+    const { status, tag, keyword, startDate, endDate } = req.query;
+
+    // 初始化查詢對象
+    let query = {};
+
+    // 根據狀態過濾
+    if (status) {
+      query.status = status;
+    }
+
+    // 根據標籤過濾
+    if (tag) {
+      query.tag = tag;
+    }
+
+    // 根據關鍵字過濾
+    if (keyword) {
+      query.$or = [
+        { title: { $regex: keyword, $options: "i" } },
+        { content: { $regex: keyword, $options: "i" } },
+      ];
+    }
+
+    // 根據 createAt 日期區間過濾
+    if (startDate && endDate) {
+      query.createdAt = {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate),
+      };
+    }
+
+    // 從新到舊排序
+    const sortOption = { createdAt: -1 };
+
+    const announcements = await Announcement.find(query)
+      .sort(sortOption)
+      .populate("user", "name avatar");
 
     // 格式化時間
     const formattedAnnouncements = announcements.map((announcement) => {

@@ -1397,6 +1397,36 @@
             "name": "token",
             "in": "header",
             "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "公告狀態 ( 0: 未公告 1: 已公告 )",
+            "type": "Number"
+          },
+          {
+            "name": "tag",
+            "in": "query",
+            "description": "公告標籤 ( 公告、功能、其他 )",
+            "type": "string"
+          },
+          {
+            "name": "keyword",
+            "in": "query",
+            "description": "關鍵字，用於公告標題和公告內容的模糊搜索",
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "開始日期，用於篩選公告的起始時間",
+            "type": "Date"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "結束日期，用於篩選公告的結束時間",
+            "type": "Date"
           }
         ],
         "responses": {

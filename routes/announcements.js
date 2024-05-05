@@ -52,6 +52,12 @@ router.get(
   /* 	
     #swagger.tags = ['Announcements']
     #swagger.description = '後台管理員 - 取得所有公告' 
+
+    #swagger.parameters['status'] = { in: 'query', description: '公告狀態 ( 0: 未公告 1: 已公告 )', type: 'Number' }
+    #swagger.parameters['tag'] = { in: 'query', description: '公告標籤 ( 公告、功能、其他 )', type: 'string' }
+    #swagger.parameters['keyword'] = { in: 'query', description: '關鍵字，用於公告標題和公告內容的模糊搜索', type: 'string' }
+    #swagger.parameters['startDate'] = { in: 'query', description: '開始日期，用於篩選公告的起始時間', type: 'Date' }
+    #swagger.parameters['endDate'] = { in: 'query', description: '結束日期，用於篩選公告的結束時間', type: 'Date' }
   */
 );
 
