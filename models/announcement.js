@@ -6,10 +6,6 @@ const announcementSchema = new mongoose.Schema(
       type: String,
       required: [true, "公告標題未填寫"],
     },
-    time: {
-      type: Date,
-      default: Date.now, // 預設為當前時間
-    },
     content: {
       type: String, // 內文可以存儲 HTML 內容
       required: [true, "公告內文未填寫"],

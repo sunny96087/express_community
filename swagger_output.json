@@ -27,6 +27,10 @@
     {
       "name": "Email",
       "description": "信箱驗證"
+    },
+    {
+      "name": "Announcement",
+      "description": "公告"
     }
   ],
   "schemes": [
@@ -1286,12 +1290,93 @@
     },
     "/announcements/": {
       "post": {
-        "description": "",
+        "tags": [
+          "Announcements"
+        ],
+        "description": "後台管理員 - 新增公告",
         "parameters": [
           {
             "name": "token",
             "in": "header",
             "type": "string"
+          },
+          {
+            "name": "announcement",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "公告標題"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "content": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "公告內容"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "status": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "number"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "公告狀態 ( 0: 未公告 1: 已公告 )"
+                    },
+                    "default": {
+                      "type": "number",
+                      "example": 0
+                    }
+                  }
+                },
+                "tag": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "公告標籤 ( 公告、功能、其他 )"
+                    },
+                    "default": {
+                      "type": "string",
+                      "example": "公告"
+                    }
+                  }
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -1303,7 +1388,10 @@
     },
     "/announcements/admin": {
       "get": {
-        "description": "",
+        "tags": [
+          "Announcements"
+        ],
+        "description": "後台管理員 - 取得所有公告",
         "parameters": [
           {
             "name": "token",
@@ -1318,9 +1406,12 @@
         }
       }
     },
-    "/announcements/announcements/{id}": {
+    "/announcements/update/{id}": {
       "put": {
-        "description": "",
+        "tags": [
+          "Announcements"
+        ],
+        "description": "後台管理員 - 編輯公告",
         "parameters": [
           {
             "name": "id",
@@ -1332,6 +1423,84 @@
             "name": "token",
             "in": "header",
             "type": "string"
+          },
+          {
+            "name": "announcement",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "公告標題"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "content": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "公告內容"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "status": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "number"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "公告狀態 ( 0: 未公告 1: 已公告 )"
+                    },
+                    "default": {
+                      "type": "number",
+                      "example": 0
+                    }
+                  }
+                },
+                "tag": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "公告標籤 ( 公告、功能、其他 )"
+                    },
+                    "default": {
+                      "type": "string",
+                      "example": "公告"
+                    }
+                  }
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -1339,9 +1508,14 @@
             "description": ""
           }
         }
-      },
+      }
+    },
+    "/announcements/delete/{id}": {
       "delete": {
-        "description": "",
+        "tags": [
+          "Announcements"
+        ],
+        "description": "後台管理員 - 刪除公告",
         "parameters": [
           {
             "name": "id",
@@ -1364,7 +1538,30 @@
     },
     "/announcements/all": {
       "get": {
-        "description": "",
+        "tags": [
+          "Announcements"
+        ],
+        "description": "前台使用者 - 取得所有公告",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "排序方式：預設最新, oldest（最舊）",
+            "type": "string"
+          },
+          {
+            "name": "keyword",
+            "in": "query",
+            "description": "關鍵字，用於公告標題和公告內容的模糊搜索",
+            "type": "string"
+          },
+          {
+            "name": "tag",
+            "in": "query",
+            "description": "公告標籤 ( 公告、功能、其他 )",
+            "type": "string"
+          }
+        ],
         "responses": {
           "default": {
             "description": ""
@@ -1372,9 +1569,12 @@
         }
       }
     },
-    "/announcements/announcements/{id}/views": {
+    "/announcements/views/{id}": {
       "put": {
-        "description": "",
+        "tags": [
+          "Announcements"
+        ],
+        "description": "前台自動計算 - 增加公告瀏覽次數",
         "parameters": [
           {
             "name": "id",

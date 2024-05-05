@@ -37,6 +37,10 @@ const doc = {
         name: "Email",
         description: "信箱驗證"
       },
+      {
+        name: "Announcement",
+        description: "公告"
+      },
     ],
 }
 

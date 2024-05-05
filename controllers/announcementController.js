@@ -4,6 +4,7 @@ const Announcement = require("../models/announcement");
 const User = require("../models/user");
 const handleSuccess = require("../utils/handleSuccess"); // 假設您已經有一個 handleSuccess 函數來處理成功的回應
 const appError = require("../utils/appError"); // 假設您已經有一個 appError 函數來處理錯誤
+const dayjs = require("dayjs");
 
 const announcementController = {
   // 新增公告
@@ -46,7 +47,22 @@ const announcementController = {
       "user",
       "name avatar"
     );
-    handleSuccess(res, announcements, "取得所有公告成功");
+
+    // 格式化時間
+    const formattedAnnouncements = announcements.map((announcement) => {
+      const announcementObj = announcement.toObject();
+      return {
+        ...announcementObj,
+        createdAt: dayjs(announcementObj.createdAt).format(
+          "YYYY-MM-DD HH:mm:ss"
+        ),
+        updatedAt: dayjs(announcementObj.updatedAt).format(
+          "YYYY-MM-DD HH:mm:ss"
+        ),
+      };
+    });
+
+    handleSuccess(res, formattedAnnouncements, "取得所有公告成功");
   },
 
   // 後台管理員編輯公告
@@ -82,7 +98,7 @@ const announcementController = {
     handleSuccess(res, updatedAnnouncement, "編輯公告成功");
   },
 
-  // 後台管理員刪除公告
+  // 後台管理員刪除單筆公告
   deleteAnnouncement: async function (req, res, next) {
     // 從 token 拿 isAdmin
     const isAdmin = req.user.isAdmin;
@@ -128,21 +144,33 @@ const announcementController = {
 
     // 根據排序參數排序
     let sortOption = {};
-    if (sort) {
-      const sortKey = sort.split(":")[0];
-      const sortOrder = sort.split(":")[1] === "desc" ? -1 : 1;
-      sortOption[sortKey] = sortOrder;
+    if (sort === "oldest") {
+      sortOption.createdAt = 1;
     } else {
       // 預設排序為由新到舊
       sortOption.createdAt = -1;
     }
 
     // 執行查詢
-    const announcements = await Announcement.find(query, "-status").sort(
-      sortOption
-    );
+    const announcements = await Announcement.find(query, "-status")
+      .sort(sortOption)
+      .populate("user", "name avatar");
 
-    handleSuccess(res, announcements, "取得所有公告成功");
+    // 格式化日期
+    const formattedAnnouncements = announcements.map((announcements) => {
+      const announcementObj = announcements.toObject();
+      return {
+        ...announcementObj,
+        createdAt: dayjs(announcementObj.createdAt).format(
+          "YYYY-MM-DD HH:mm:ss"
+        ),
+        updatedAt: dayjs(announcementObj.updatedAt).format(
+          "YYYY-MM-DD HH:mm:ss"
+        ),
+      };
+    });
+
+    handleSuccess(res, formattedAnnouncements, "取得所有公告成功");
   },
 
   // 增加公告的檢視次數
