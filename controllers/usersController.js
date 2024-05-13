@@ -419,9 +419,10 @@ const usersController = {
     if (password !== confirmPassword) {
       return next(appError("400", "密碼不一致！"));
     }
-    // 密碼 8 碼以上
-    if (!validator.isLength(password, { min: 8 })) {
-      return next(appError("400", "密碼字數低於 8 碼"));
+    // 密碼必須為英數混合且至少 8 碼
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return next(appError("400", "密碼必須為英數混合且至少 8 碼"));
     }
     // 是否為 Email
     if (!validator.isEmail(email)) {
@@ -466,9 +467,10 @@ const usersController = {
     if (password !== confirmPassword) {
       return next(appError("400", "密碼不一致！"));
     }
-    // 密碼 8 碼以上
-    if (!validator.isLength(password, { min: 8 })) {
-      return next(appError("400", "密碼字數低於 8 碼"));
+    // 密碼必須為英數混合且至少 8 碼
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return next(appError("400", "密碼必須為英數混合且至少 8 碼"));
     }
     // 是否為 Email
     if (!validator.isEmail(email)) {
@@ -589,6 +591,12 @@ const usersController = {
   // 重設密碼
   updatePassword: async function (req, res, next) {
     const { password, confirmPassword } = req.body;
+
+    // 密碼必須為英數混合且至少 8 碼
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return next(appError("400", "密碼必須為英數混合且至少 8 碼"));
+    }
 
     if (password !== confirmPassword) {
       return next(appError("400", "密碼不一致！"));
