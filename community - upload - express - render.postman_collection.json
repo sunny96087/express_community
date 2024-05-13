@@ -1,0 +1,137 @@
+{
+	"info": {
+		"_postman_id": "f5ff3f3b-e87d-4b79-8dc7-04a62af728b5",
+		"name": "community - upload - express - render",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32244852"
+	},
+	"item": [
+		{
+			"name": "取得所有圖片",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "https://express-community.onrender.com/upload/image",
+					"protocol": "https",
+					"host": [
+						"express-community",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"upload",
+						"image"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "上傳圖片",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "postman-cloud:///1ef06a49-7ffc-4660-ac9b-9befed5c4469"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://express-community.onrender.com/upload/image",
+					"protocol": "https",
+					"host": [
+						"express-community",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"upload",
+						"image"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "上傳圖片 要登入才能用的版本",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MzcxYWVlNDNkNzFjMGYxYzQ2Y2MzZCIsImlhdCI6MTcxNTYxMjE4MCwiZXhwIjoxNzE2MjE2OTgwfQ.BuH-Fl6XamEL8hexus0sjZDYSNAhgW-k522wYk-F8TE",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "postman-cloud:///1ef06a49-7ffc-4660-ac9b-9befed5c4469"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://express-community.onrender.com/upload/userImage",
+					"protocol": "https",
+					"host": [
+						"express-community",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"upload",
+						"userImage"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "刪除圖片",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "https://express-community.onrender.com/upload/image?fileName=images/efef201d-3fb6-4e33-9022-d192df4cd9f9.jpeg",
+					"protocol": "https",
+					"host": [
+						"express-community",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"upload",
+						"image"
+					],
+					"query": [
+						{
+							"key": "fileName",
+							"value": "images/efef201d-3fb6-4e33-9022-d192df4cd9f9.jpeg"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

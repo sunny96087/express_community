@@ -5,6 +5,7 @@ const router = express.Router();
 const handleErrorAsync = require("../utils/handleErrorAsync");
 const appError = require("../utils/appError");
 const uploadController = require("../controllers/uploadController");
+const { isAuth } = require("../utils/auth");
 
 const multer = require("multer");
 
@@ -65,6 +66,32 @@ router.post(
   /** 
     #swagger.tags = ['Upload']
     #swagger.description = '上傳圖片'
+
+    #swagger.parameters['upload'] = {
+        in: 'body',
+        required: true,
+        schema: {
+            file: {
+                type: 'file',
+                format: 'binary',
+                description: '圖片檔案',
+                required: true
+            }
+        }
+    }
+    */
+);
+
+// 上傳圖片 -> 要登入才能用的版本
+router.post(
+  "/userImage",
+  isAuth,
+  handleFileUpload,
+  handleErrorAsync(uploadController.uploadUserImage)
+
+  /** 
+    #swagger.tags = ['Upload']
+    #swagger.description = '上傳圖片 -> 要登入才能用的版本'
 
     #swagger.parameters['upload'] = {
         in: 'body',

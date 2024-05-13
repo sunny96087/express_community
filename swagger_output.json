@@ -1232,6 +1232,57 @@
         }
       }
     },
+    "/upload/userImage": {
+      "post": {
+        "tags": [
+          "Upload"
+        ],
+        "description": "上傳圖片 -> 要登入才能用的版本",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "upload",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "file": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "file"
+                    },
+                    "format": {
+                      "type": "string",
+                      "example": "binary"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "圖片檔案"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/email/personalMail": {
       "post": {
         "tags": [
