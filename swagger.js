@@ -38,7 +38,7 @@ const doc = {
         description: "信箱驗證"
       },
       {
-        name: "Announcement",
+        name: "Announcements",
         description: "公告"
       },
     ],
