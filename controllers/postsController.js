@@ -100,6 +100,48 @@ const postsController = {
     handleSuccess(res, formattedPosts, "取得所有資料成功");
   },
 
+  // 取得指定 ID 的文章
+  getPostById: async (req, res, next) => {
+    const id = req.params.id;
+
+    // 檢查 ID 格式及是否存在
+    const isIdExist = await tools.findModelByIdNext(Post, id, next);
+    if (!isIdExist) {
+      return;
+    }
+
+    // 執行查詢
+    const post = await Post.findById(id).populate([
+      {
+        path: "userId",
+        select: "name avatar id",
+      },
+      {
+        path: "comments",
+        populate: {
+          path: "userId",
+          select: "name avatar",
+        },
+      },
+      {
+        path: "likedBy",
+        select: "name avatar",
+      },
+    ]);
+
+    // 格式化日期
+    const formattedPost = post.toObject();
+    formattedPost.createdAt = dayjs(post.createdAt).format("YYYY-MM-DD HH:mm:ss");
+    formattedPost.comments = formattedPost.comments.map((comment) => {
+      return {
+        ...comment,
+        createdAt: dayjs(comment.createdAt).format("YYYY-MM-DD HH:mm:ss"),
+      };
+    });
+
+    handleSuccess(res, formattedPost, "取得單筆文章成功");
+  },
+
   // 新增一筆文章
   createPost: async (req, res, next) => {
     // 直接從 token 拿 id

@@ -19,6 +19,12 @@ router.get(
   */
 );
 
+// 取得指定 ID 的文章
+router.get("/:id", handleErrorAsync(postsController.getPostById)
+  // #swagger.tags = ['Posts']
+  // #swagger.description = '取得指定 ID 的文章'
+);
+
 // 新增一筆文章
 router.post(
   "/",
