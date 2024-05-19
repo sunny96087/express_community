@@ -1,0 +1,171 @@
+{
+	"info": {
+		"_postman_id": "e7306a2c-27d5-427e-8e38-8c2b9464cb1b",
+		"name": "community - 動態貼文",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32244852"
+	},
+	"item": [
+		{
+			"name": "✨ 取得所有文章?query",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://express-community.onrender.com/posts?sort=mostLiked&keyword=",
+					"protocol": "https",
+					"host": [
+						"express-community",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"posts"
+					],
+					"query": [
+						{
+							"key": "sort",
+							"value": "mostLiked",
+							"description": "預設最新, oldest（最舊）、mostLiked（最多讚）"
+						},
+						{
+							"key": "keyword",
+							"value": "",
+							"description": "關鍵字"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "取得單筆文章 /:id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://express-community.onrender.com/posts/663783b1d6f8ea64a54a80bf",
+					"protocol": "https",
+					"host": [
+						"express-community",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"posts",
+						"663783b1d6f8ea64a54a80bf"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "✨ 新增單筆文章",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NGEwOGUwN2FkNmVmNzM2OTVlZWNiOCIsImlhdCI6MTcxNjEyODI2MywiZXhwIjoxNzE2NzMzMDYzfQ.y2VqqFuero84hOOIKc8aF4UOrF6aQLDmjFzH6NaxWUk"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"content\": \"test\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://express-community.onrender.com/posts",
+					"protocol": "https",
+					"host": [
+						"express-community",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"posts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "按讚及取消單筆文章",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"userId\": \"664a08e07ad6ef73695eecb8\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://express-community.onrender.com/posts/like/663783b1d6f8ea64a54a80bf",
+					"protocol": "https",
+					"host": [
+						"express-community",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"posts",
+						"like",
+						"663783b1d6f8ea64a54a80bf"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "新增單筆留言",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"content\": \"test test\",\n    \"userId\": \"664a08e07ad6ef73695eecb8\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://express-community.onrender.com/posts/comments/663783b1d6f8ea64a54a80bf",
+					"protocol": "https",
+					"host": [
+						"express-community",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"posts",
+						"comments",
+						"663783b1d6f8ea64a54a80bf"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

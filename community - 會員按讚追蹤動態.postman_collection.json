@@ -1,0 +1,96 @@
+{
+	"info": {
+		"_postman_id": "4a33a604-47d4-4022-9038-095a1caba56e",
+		"name": "community - 會員按讚追蹤動態",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32244852"
+	},
+	"item": [
+		{
+			"name": "追蹤或取消追蹤用戶",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NGEwOGUwN2FkNmVmNzM2OTVlZWNiOCIsImlhdCI6MTcxNjEyODI2MywiZXhwIjoxNzE2NzMzMDYzfQ.y2VqqFuero84hOOIKc8aF4UOrF6aQLDmjFzH6NaxWUk"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://express-community.onrender.com/users/follow/663655be5b6196d7ba5bbc30",
+					"protocol": "https",
+					"host": [
+						"express-community",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"users",
+						"follow",
+						"663655be5b6196d7ba5bbc30"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "取得單筆會員按讚文章",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://express-community.onrender.com/users/likedPosts/664a08e07ad6ef73695eecb8",
+					"protocol": "https",
+					"host": [
+						"express-community",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"users",
+						"likedPosts",
+						"664a08e07ad6ef73695eecb8"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "取得使用者追蹤清單",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NGEwOGUwN2FkNmVmNzM2OTVlZWNiOCIsImlhdCI6MTcxNjEyODI2MywiZXhwIjoxNzE2NzMzMDYzfQ.y2VqqFuero84hOOIKc8aF4UOrF6aQLDmjFzH6NaxWUk"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:3666/users/followList",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "3666",
+					"path": [
+						"users",
+						"followList"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

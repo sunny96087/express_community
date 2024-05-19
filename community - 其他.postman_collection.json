@@ -1,0 +1,41 @@
+{
+	"info": {
+		"_postman_id": "023fc055-f916-4b5d-a560-05ed383f0366",
+		"name": "community - 其他",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32244852"
+	},
+	"item": [
+		{
+			"name": "上傳圖片 Copy",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "postman-cloud:///1ef06a49-7ffc-4660-ac9b-9befed5c4469"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://express-community.onrender.com/upload/image",
+					"protocol": "https",
+					"host": [
+						"express-community",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"upload",
+						"image"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
