@@ -520,7 +520,7 @@ const usersController = {
       service: "gmail",
       auth: {
         type: "OAuth2",
-        user: "yu13142013@gmail.com",
+        user: "yain13142013@gmail.com",
         clientId: process.env.GOOGLE_AUTH_CLIENTID,
         clientSecret: process.env.GOOGLE_AUTH_CLIENT_SECRET,
         refreshToken: process.env.GOOGLE_AUTH_REFRESH_TOKEN,
