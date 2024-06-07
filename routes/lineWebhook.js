@@ -101,6 +101,7 @@ const flexMessage = {
           text: "想詢問關於哪部分的問題呢？",
           size: "xl",
           weight: "bold",
+          wrap: true,
         },
         {
           type: "separator",
@@ -161,6 +162,7 @@ const secondLevelMenu1 = {
           text: "想詢問會員相關的什麼問題呢？",
           size: "xl",
           weight: "bold",
+          wrap: true,
         },
         {
           type: "separator",
@@ -212,6 +214,7 @@ const secondLevelMenu2 = {
           text: "想詢問貼文相關的什麼問題呢？",
           size: "xl",
           weight: "bold",
+          wrap: true,
         },
         {
           type: "separator",
@@ -272,6 +275,7 @@ const secondLevelMenu3 = {
           text: "想詢問關於平台的什麼問題呢？",
           size: "xl",
           weight: "bold",
+          wrap: true,
         },
         {
           type: "separator",
