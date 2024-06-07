@@ -74,6 +74,10 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    lineUserId: {
+      type: String,
+      unique: true, // 確保 LINE 用戶 ID 是唯一的
+    },
   },
   {
     versionKey: false, // 禁用 __v 欄位

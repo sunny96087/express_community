@@ -11,7 +11,9 @@
     "swagger": "node ./swagger.js"
   },
   "dependencies": {
+    "@line/bot-sdk": "^9.2.2",
     "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
     "dayjs": "^1.11.10",
